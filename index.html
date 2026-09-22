@@ -3,413 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบยืม-คืนอุปกรณ์ไอที | IT Equipment Borrowing System</title>
-    <!-- Tailwind CSS CDN -->
+    <title>เข้าสู่ระบบ - ระบบยืม-คืนอุปกรณ์ไอที</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Font: Prompt -->
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Prompt', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <!-- Background Decorative Elements -->
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+
+    <div class="w-full max-w-md relative z-10">
+        
+        <!-- Header Logo -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 mb-4">
+                <i class="fas fa-laptop text-3xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-wide">ระบบยืม-คืนอุปกรณ์ไอที</h1>
+            <p class="text-slate-400 text-sm mt-1">สถาบันการศึกษา / มหาวิทยาลัย</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 shadow-2xl">
+            <h2 class="text-xl font-bold text-white mb-1">เข้าสู่ระบบ</h2>
+            <p class="text-slate-400 text-xs mb-6">ใช้อีเมลสถาบันเพื่อเข้าสู่ระบบ (นักศึกษา / เจ้าหน้าที่)</p>
+
+            <form id="loginForm" class="space-y-5" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">อีเมลสถาบัน</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <input type="email" id="email" required
+                            class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                            placeholder="student@university.ac.th">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">รหัสผ่าน</label>
+                        <a href="#" class="text-xs text-blue-400 hover:text-blue-300 transition">ลืมรหัสผ่าน?</a>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="password" required
+                            class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- Alert Message -->
+                <div id="alertBox" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle text-sm"></i>
+                    <span id="alertText">อีเมลหรือรหัสผ่านไม่ถูกต้อง</span>
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-400">
+                ยังไม่มีบัญชีใช้งาน? 
+                <a href="register.html" class="text-blue-400 hover:underline font-semibold ml-1">ลงทะเบียนนักศึกษาใหม่</a>
+            </div>
+        </div>
+
+        <!-- Footer Notice -->
+        <p class="text-center text-xs text-slate-500 mt-8">
+            &copy; IT Equipment Borrowing System. Internal Campus Use Only.
+        </p>
+    </div>
+
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        prompt: ['Prompt', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                            dark: '#0f172a'
-                        }
-                    }
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const alertBox = document.getElementById('alertBox');
+            const alertText = document.getElementById('alertText');
+
+            // ตรวจสอบว่าเป็นอีเมลของสถาบันหรือไม่ (โดเมนจำกัด)
+            if (!email.endsWith('@university.ac.th') && !email.endsWith('@mail.kmutt.ac.th') && !email.includes('@')) {
+                alertText.textContent = "กรุณาใช้อีเมลสถาบันการศึกษาเท่านั้น";
+                alertBox.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                /* 
+                // การเชื่อมต่อ Django API จริง
+                const response = await fetch('/api/login/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: email, password: password })
+                });
+                const data = await response.json();
+                */
+
+                // 📌 จำลองระบบตรวจสอบ Role จาก Backend (Mock Data)
+                let data = { success: false };
+
+                if (email === 'admin@university.ac.th' && password === 'admin123') {
+                    data = { success: true, token: 'jwt-admin-token', is_staff: true };
+                } else if (email === 'student@university.ac.th' && password === '123456') {
+                    data = { success: true, token: 'jwt-student-token', is_staff: false };
                 }
+
+                if (data.success) {
+                    localStorage.setItem('userToken', data.token);
+                    localStorage.setItem('isStaff', data.is_staff);
+
+                    // 🔀 นำทางไปยังหน้าที่ถูกต้องตามสิทธิ์ (Role-Based Routing)
+                    if (data.is_staff) {
+                        window.location.href = 'admin_dashboard.html'; // ส่งแอดมินไป Dashboard
+                    } else {
+                        window.location.href = 'index.html'; // ส่งนักศึกษาไปหน้ายืมอุปกรณ์
+                    }
+                } else {
+                    alertText.textContent = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+                    alertBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                alertText.textContent = "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์";
+                alertBox.classList.remove('hidden');
             }
         }
     </script>
-    <style>
-        body { font-family: 'Prompt', sans-serif; }
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
-
-    <!-- NAV BAR (Space Between / Glassmorphism) -->
-    <nav class="sticky top-0 z-50 glass-nav border-b border-slate-200 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo & Brand Name -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-                        <i class="fa-solid fa-laptop-code text-xl"></i>
-                    </div>
-                    <div>
-                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-900 to-brand-600">IT Borrow</span>
-                        <span class="text-xs block text-slate-500 font-medium -mt-1">ระบบยืม-คืนอุปกรณ์ไอที</span>
-                    </div>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-8 font-medium text-slate-600 text-sm">
-                    <a href="#home" class="text-brand-600 hover:text-brand-700 transition">หน้าแรก</a>
-                    <a href="#equipment" class="hover:text-brand-600 transition">รายการอุปกรณ์</a>
-                    <a href="#steps" class="hover:text-brand-600 transition">ขั้นตอนการยืม</a>
-                    <a href="#rules" class="hover:text-brand-600 transition">ระเบียบการยืม</a>
-                </div>
-
-                <!-- Auth Buttons -->
-                <div class="flex items-center gap-3">
-                    <a href="login.html" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 transition duration-200">
-                        เข้าสู่ระบบ
-                    </a>
-                    <a href="register.html" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-600/20 transition duration-200">
-                        ลงทะเบียน
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO HEADER SECTION -->
-    <header id="home" class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-brand-dark to-slate-900 text-white py-20 lg:py-28">
-        <!-- Background Decorative Blur -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-brand-500/20 blur-[120px] rounded-full pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Hero Content -->
-                <div class="lg:col-span-7 text-center lg:text-left space-y-6">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-400/20 text-brand-300 text-xs font-medium">
-                        <span class="flex h-2 w-2 rounded-full bg-teal-400 animate-ping"></span>
-                        ระบบเช็กจำนวนคงเหลือ Real-time 24 ชั่วโมง
-                    </div>
-                    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight">
-                        ยืมอุปกรณ์ไอทีเพื่อการเรียนรู้ <br>
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-teal-300 to-emerald-400">
-                            สะดวก รวดเร็ว โปร่งใส
-                        </span>
-                    </h1>
-                    <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed max-w-2xl">
-                        ไม่เสียเวลาเดินมาเก้อ ตรวจสอบจำนวนคงเหลือได้ทันที จองล่วงหน้าผ่านระบบ และรับ-คืนอุปกรณ์ด้วย QR Code ที่เคาน์เตอร์ได้อย่างสะดวกสบาย
-                    </p>
-                    
-                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-                        <a href="#equipment" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-teal-600 hover:from-brand-500 hover:to-teal-500 text-white font-semibold shadow-lg shadow-brand-500/25 transition duration-200 text-center">
-                            <i class="fa-solid fa-boxes-stacked mr-2"></i> ดูอุปกรณ์ที่เปิดให้ยืม
-                        </a>
-                        <a href="#steps" class="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-semibold transition duration-200 text-center">
-                            ขั้นตอนการใช้งาน
-                        </a>
-                    </div>
-
-                    <!-- Quick Stats Badge -->
-                    <div class="pt-8 border-t border-slate-800/80 grid grid-cols-3 gap-4 text-center lg:text-left">
-                        <div>
-                            <span class="block text-2xl font-bold text-white">100%</span>
-                            <span class="text-xs text-slate-400">จองผ่านระบบ</span>
-                        </div>
-                        <div>
-                            <span class="block text-2xl font-bold text-teal-400">Real-time</span>
-                            <span class="text-xs text-slate-400">อัปเดตสต็อกคงเหลือ</span>
-                        </div>
-                        <div>
-                            <span class="block text-2xl font-bold text-blue-400">QR Code</span>
-                            <span class="text-xs text-slate-400">ยืนยันรับ-คืนเร็ว</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hero Image Showcase -->
-                <div class="lg:col-span-5 relative">
-                    <div class="relative mx-auto max-w-md lg:max-w-none rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-slate-800/80 p-2">
-                        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1000&auto=format&fit=crop" 
-                             alt="IT Equipment Showcase" 
-                             class="w-full h-80 lg:h-96 object-cover rounded-xl">
-                        <!-- Floating Info Card -->
-                        <div class="absolute bottom-6 left-6 right-6 p-4 rounded-xl glass-nav border border-white/20 shadow-lg text-slate-800 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-semibold text-slate-500">สถานะล่าสุด</p>
-                                    <p class="text-sm font-bold text-slate-800">พร้อมให้จองใช้งาน</p>
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-600 text-xs font-semibold rounded-full border border-emerald-500/20">
-                                ว่าง
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </header>
-
-    <!-- STEPS SECTION (4 ขั้นตอนการยืม) -->
-    <section id="steps" class="py-16 bg-white border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-brand-600">Simple Process</h2>
-                <p class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">4 ขั้นตอนง่ายๆ ในการยืมอุปกรณ์ไอที</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Step 1 -->
-                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 font-bold text-xl flex items-center justify-center mb-4">1</div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">เลือกและจองในระบบ</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">เช็กจำนวนคงเหลือ เลือกวันยืม-คืน และกด "ยืนยันการจอง" ผ่านระบบล่วงหน้า</p>
-                </div>
-                <!-- Step 2 -->
-                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 font-bold text-xl flex items-center justify-center mb-4">2</div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">รับ QR Code</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">ระบบสร้าง QR Code ประจำรายการยืม พร้อมส่งอีเมลยืนยันการจองให้ทันที</p>
-                </div>
-                <!-- Step 3 -->
-                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 font-bold text-xl flex items-center justify-center mb-4">3</div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">แสดง QR Code ที่เคาน์เตอร์</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">เจ้าหน้าที่สแกน QR Code ตรวจสภาพ และกด **"ยืนยันส่งมอบ"** เพื่อรับของ</p>
-                </div>
-                <!-- Step 4 -->
-                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 font-bold text-xl flex items-center justify-center mb-4">4</div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">นำมาคืนตรงเวลา</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">คืนตามกำหนด เจ้าหน้าที่ตรวจสภาพอุปกรณ์ สรุปการคืนตรงเวลาเพื่อรักษา สิทธิ์บัญชีปกติ</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTENT SECTION: SHOWCASE EQUIPMENT CARDS (6 ตัวอย่างอุปกรณ์) -->
-    <section id="equipment" class="py-20 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-600">Equipment Catalog</span>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">รายการอุปกรณ์ไอทียอดนิยม</h2>
-                </div>
-                <a href="login.html" class="mt-4 md:mt-0 inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700">
-                    เข้าสู่ระบบเพื่อดูคลังอุปกรณ์ทั้งหมด <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-                </a>
-            </div>
-
-            <!-- Grid 6 Sample Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Card 1 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-48 bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop" alt="MacBook Pro" class="w-full h-full object-cover">
-                        <!-- Real-time Status Badge -->
-                        <div class="absolute top-3 right-3 px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-sm">
-                            เหลือ 2/5
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">โน้ตบุ๊ก (Laptop)</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-2">MacBook Pro 13" (M1)</h3>
-                            <p class="text-xs text-slate-500 mt-1">สำหรับการประมวลผลสูง งานตัดต่อ และพัฒนาดิจิทัล</p>
-                        </div>
-                        <a href="login.html" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-medium text-sm transition text-center block">
-                            เข้าสู่ระบบเพื่อจอง
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-48 bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=600&auto=format&fit=crop" alt="iPad Pro" class="w-full h-full object-cover">
-                        <div class="absolute top-3 right-3 px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-sm">
-                            เหลือ 4/8
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">แท็บเล็ต (Tablet)</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-2">iPad Air 5 + Apple Pencil 2</h3>
-                            <p class="text-xs text-slate-500 mt-1">สำหรับงานจดบันทึก ออกแบบกราฟิก และนำเสนอผลงาน</p>
-                        </div>
-                        <a href="login.html" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-medium text-sm transition text-center block">
-                            เข้าสู่ระบบเพื่อจอง
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-48 bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop" alt="Projector" class="w-full h-full object-cover">
-                        <!-- Out of stock badge -->
-                        <div class="absolute top-3 right-3 px-3 py-1 bg-rose-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-sm">
-                            ของหมด (0/3)
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">โพรเจกเตอร์ (Projector)</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-2">Epson Full HD Projector</h3>
-                            <p class="text-xs text-slate-500 mt-1">สำหรับงานพรีเซนต์ในห้องประชุม และการสัมมนา</p>
-                        </div>
-                        <button disabled class="w-full py-2.5 rounded-xl bg-slate-200 text-slate-400 font-medium text-sm cursor-not-allowed text-center">
-                            ของหมดชั่วคราว
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-48 bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop" alt="Camera" class="w-full h-full object-cover">
-                        <div class="absolute top-3 right-3 px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-sm">
-                            เหลือ 1/2
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">กล้องถ่ายภาพ (Camera)</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-2">Canon EOS R10 + Kit Lens</h3>
-                            <p class="text-xs text-slate-500 mt-1">สำหรับการบันทึกวิดีโอ สื่อการเรียนการสอน และกิจกรรมสถาบัน</p>
-                        </div>
-                        <a href="login.html" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-medium text-sm transition text-center block">
-                            เข้าสู่ระบบเพื่อจอง
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-48 bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=600&auto=format&fit=crop" alt="Wireless Mic" class="w-full h-full object-cover">
-                        <div class="absolute top-3 right-3 px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-sm">
-                            เหลือ 3/4
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">อุปกรณ์เสียง (Audio)</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-2">Wireless Microphone Set</h3>
-                            <p class="text-xs text-slate-500 mt-1">ชุดไมโครโฟนไร้สายสำหรับการบรรยายและสัมมนาวิชาการ</p>
-                        </div>
-                        <a href="login.html" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-medium text-sm transition text-center block">
-                            เข้าสู่ระบบเพื่อจอง
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-48 bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=600&auto=format&fit=crop" alt="Dell XPS" class="w-full h-full object-cover">
-                        <div class="absolute top-3 right-3 px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-sm">
-                            เหลือ 5/10
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">โน้ตบุ๊ก (Laptop)</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-2">Dell Latitude 15" (Core i7)</h3>
-                            <p class="text-xs text-slate-500 mt-1">สำหรับงานวิเคราะห์ข้อมูล การพิมพ์รายงาน และงานทั่วไป</p>
-                        </div>
-                        <a href="login.html" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-medium text-sm transition text-center block">
-                            เข้าสู่ระบบเพื่อจอง
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- RULES & PENALTY INFO SECTION -->
-    <section id="rules" class="py-16 bg-white border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-gradient-to-br from-slate-900 to-brand-dark rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden">
-                <div class="max-w-3xl relative z-10 space-y-4">
-                    <span class="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold rounded-full inline-block">
-                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> กฎระเบียบและบทลงโทษ
-                    </span>
-                    <h2 class="text-2xl sm:text-3xl font-bold">เพื่อความเป็นธรรมและความโปร่งใสของทุกคน</h2>
-                    <ul class="space-y-3 text-slate-300 text-sm font-light pt-2">
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-teal-400 mt-1"></i>
-                            <span><strong>กรณีจองแล้วไม่มารับ:</strong> หากไม่มารับตามเวลาที่กำหนด ระบบจะยกเลิกการจองให้อัตโนมัติ เพื่อคืนสิทธิ์ให้ผู้อื่น</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-amber-400 mt-1"></i>
-                            <span><strong>กรณีคืนเกินกำหนด:</strong> หากคืนล่าช้ากว่ากำหนด ระบบจะตั้งสถานะบัญชีเป็น <strong class="text-amber-300 font-semibold">"ถูกพักสิทธิ์ชั่วคราว"</strong> ห้ามจองอุปกรณ์ใหม่ชั่วคราว 1-2 วัน (ดูประวัติและล็อกอินได้ปกติ)</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-blue-400 mt-1"></i>
-                            <span><strong>เมื่อครบกำหนดพักสิทธิ์:</strong> ระบบจะคืนสิทธิ์การจองให้อัตโนมัติ โดยไม่ต้องแจ้งเจ้าหน้าที่ปลดล็อก</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 mt-auto py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-slate-800">
-                <!-- Col 1: Brand Info -->
-                <div class="space-y-3 md:col-span-2">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold">
-                            <i class="fa-solid fa-laptop-code text-sm"></i>
-                        </div>
-                        <span class="text-lg font-bold text-white">IT Equipment Borrowing System</span>
-                    </div>
-                    <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
-                        ระบบจัดการยืม-คืนอุปกรณ์ไอทีผ่านเว็บ สำหรับสถาบันการศึกษาระดับอาชีวศึกษา ยืนยันผ่าน QR Code และควบคุมสต็อกแบบ Real-time
-                    </p>
-                </div>
-
-                <!-- Col 2: Quick Links -->
-                <div>
-                    <h4 class="text-sm font-semibold text-white mb-3">เมนูลัด</h4>
-                    <ul class="space-y-2 text-xs">
-                        <li><a href="#home" class="hover:text-white transition">หน้าแรก</a></li>
-                        <li><a href="#equipment" class="hover:text-white transition">รายการอุปกรณ์</a></li>
-                        <li><a href="#steps" class="hover:text-white transition">ขั้นตอนการยืม</a></li>
-                        <li><a href="login.html" class="hover:text-white transition">เข้าสู่ระบบนักศึกษา/เจ้าหน้าที่</a></li>
-                    </ul>
-                </div>
-
-                <!-- Col 3: Contact Info -->
-                <div>
-                    <h4 class="text-sm font-semibold text-white mb-3">ติดต่อเคาน์เตอร์บริการ</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        ศูนย์เทคโนโลยีสารสนเทศ อาคารวิทยบริการ ชั้น 1<br>
-                        วันจันทร์ - ศุกร์ : 08:30 - 16:30 น.<br>
-                        อีเมล: it-support@vocational.ac.th
-                    </p>
-                </div>
-            </div>
-
-            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-                <p>© 2026 IT Equipment Borrowing System. All rights reserved.</p>
-                <p>พัฒนาสำหรับสถาบันอาชีวศึกษา</p>
-            </div>
-        </div>
-    </footer>
-
 </body>
 </html>

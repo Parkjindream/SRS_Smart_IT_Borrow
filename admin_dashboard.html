@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Equipment Loan System - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Prompt', sans-serif; background-color: #f3f4f6; }
+        .sidebar-active { background-color: #2563eb; color: white; }
+        .sidebar-hover:hover { background-color: #1e293b; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar ด้านซ้าย -->
+    <aside class="w-64 bg-[#0f172a] text-gray-300 flex flex-col justify-between">
+        <div>
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3 p-6 border-b border-gray-700">
+                <div class="bg-blue-500 p-2 rounded-lg text-white">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-white leading-tight">ระบบยืม-คืนอุปกรณ์ไอที</h1>
+                    <p class="text-xs text-blue-400">แผงควบคุมเจ้าหน้าที่</p>
+                </div>
+            </div>
+
+            <!-- Menus -->
+            <nav class="mt-6 px-4 space-y-2">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-active">
+                    <i class="fas fa-chart-pie w-5"></i> แดชบอร์ด
+                </a>
+                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-lg sidebar-hover transition">
+                    <div class="flex items-center gap-3"><i class="fas fa-box-open w-5"></i> รายการรอส่งมอบ</div>
+                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+                </a>
+                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-lg sidebar-hover transition">
+                    <div class="flex items-center gap-3"><i class="fas fa-undo w-5"></i> รายการรอรับคืน</div>
+                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-hover transition">
+                    <i class="fas fa-desktop w-5"></i> จัดการอุปกรณ์
+                </a>
+                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-lg sidebar-hover transition">
+                    <div class="flex items-center gap-3"><i class="fas fa-users w-5"></i> จัดการผู้ใช้/บทลงโทษ</div>
+                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Admin Profile -->
+        <div class="p-4 border-t border-gray-700 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold">
+                ป
+            </div>
+            <div>
+                <p class="text-sm font-bold text-white">อาจารย์ปิยะ สมศักดิ์</p>
+                <a href="#" class="text-xs text-gray-400 hover:text-white transition">ออกจากระบบ</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content พื้นที่ด้านขวา -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-6 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">แดชบอร์ดภาพรวม</h2>
+                <p class="text-sm text-gray-500">สรุปสถานะระบบยืม-คืนอุปกรณ์ไอที วันนี้</p>
+            </div>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow">
+                <i class="fas fa-file-export mr-2"></i> ออกรายงาน
+            </button>
+        </header>
+
+        <!-- Dashboard Cards -->
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+                <!-- Card 1 -->
+                <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
+                    <i class="fas fa-desktop text-4xl opacity-20 absolute top-4 right-4"></i>
+                    <h3 class="text-3xl font-bold">48</h3>
+                    <p class="text-sm opacity-90">อุปกรณ์ทั้งหมด</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-orange-500 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
+                    <i class="fas fa-box text-4xl opacity-20 absolute top-4 right-4"></i>
+                    <h3 class="text-3xl font-bold">19</h3>
+                    <p class="text-sm opacity-90">ถูกยืมอยู่</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-red-600 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
+                    <i class="fas fa-exclamation-circle text-4xl opacity-20 absolute top-4 right-4"></i>
+                    <h3 class="text-3xl font-bold">2</h3>
+                    <p class="text-sm opacity-90">เกินกำหนดคืน</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-purple-600 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
+                    <i class="fas fa-ban text-4xl opacity-20 absolute top-4 right-4"></i>
+                    <h3 class="text-3xl font-bold">2</h3>
+                    <p class="text-sm opacity-90">ผู้ใช้ถูกระงับบัญชี</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="bg-teal-500 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
+                    <i class="fas fa-hourglass-half text-4xl opacity-20 absolute top-4 right-4"></i>
+                    <h3 class="text-3xl font-bold">1</h3>
+                    <p class="text-sm opacity-90">รอส่งมอบอุปกรณ์</p>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-history text-gray-400 mr-2"></i> รายการล่าสุด</h3>
+                    <a href="#" class="text-sm text-blue-600 hover:underline">ดูทั้งหมด &rarr;</a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-600">
+                        <thead class="text-xs uppercase bg-gray-50 text-gray-500 border-b">
+                            <tr>
+                                <th class="px-4 py-3">รหัสการจอง</th>
+                                <th class="px-4 py-3">อุปกรณ์</th>
+                                <th class="px-4 py-3">ผู้ยืม</th>
+                                <th class="px-4 py-3">วันที่เริ่ม-สิ้นสุด</th>
+                                <th class="px-4 py-3 text-center">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-recent-bookings">
+                            <!-- ข้อมูลจำลอง (เดี๋ยวเราจะใช้ JS ดึงจาก API มาใส่ตรงนี้) -->
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-4 py-3 font-medium text-gray-900">BK-2024-0001</td>
+                                <td class="px-4 py-3">โน้ตบุ๊ก Dell Latitude 5520</td>
+                                <td class="px-4 py-3">นายสมชาย ใจดี</td>
+                                <td class="px-4 py-3">2024-12-15 ถึง 2024-12-17</td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">กำลังยืม</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
