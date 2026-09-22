@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สร้างบัญชีใหม่ | ยืม-คืนอุปกรณ์ไอที</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { prompt: ['Prompt', 'sans-serif'] },
+                    colors: { brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } }
+                }
+            }
+        }
+    </script>
+    <style> body { font-family: 'Prompt', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+
+    <div class="sm:mx-auto sm:w-full sm:max-w-md px-4">
+        <div class="flex justify-center">
+            <div class="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                <i class="fa-solid fa-user-plus text-2xl"></i>
+            </div>
+        </div>
+        <h2 class="mt-6 text-center text-2xl sm:text-3xl font-bold text-slate-900">
+            สร้างบัญชีผู้ใช้ใหม่
+        </h2>
+        <p class="mt-2 text-center text-sm text-slate-600">
+            สำหรับนักศึกษาและเจ้าหน้าที่สถาบัน[cite: 1]
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
+        <div class="bg-white py-8 px-4 sm:px-10 shadow-xl shadow-slate-200/50 rounded-2xl border border-slate-100">
+            
+            <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm flex items-start gap-3">
+                <i id="alertIcon" class="fa-solid mt-0.5"></i>
+                <div id="alertMessage" class="flex-1 leading-relaxed"></div>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-5">
+                
+                <!-- ชื่อ - นามสกุล -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">ชื่อจริง</label>
+                        <input type="text" required class="mt-1 appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">นามสกุล</label>
+                        <input type="text" required class="mt-1 appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- อีเมล -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">อีเมลสถาบัน</label>
+                    <input type="email" required placeholder="ต้องใช้อีเมลของสถาบันเท่านั้น"
+                        class="mt-1 appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                </div>
+
+                <!-- รหัสผ่าน -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">ตั้งรหัสผ่าน</label>
+                    <input id="pwd" type="password" required placeholder="อย่างน้อย 8 ตัวอักษร" minlength="8"
+                        class="mt-1 appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                </div>
+
+                <!-- ยืนยันรหัสผ่าน -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">ยืนยันรหัสผ่านอีกครั้ง</label>
+                    <input id="confirmPwd" type="password" required placeholder="พิมพ์รหัสผ่านให้ตรงกัน"
+                        class="mt-1 appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                </div>
+
+                <!-- ปุ่มลงทะเบียน -->
+                <div class="pt-2">
+                    <button type="submit" id="submitBtn"
+                        class="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors">
+                        <span id="btnText">สมัครสมาชิก</span>
+                        <i id="btnSpinner" class="fa-solid fa-circle-notch fa-spin hidden"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-slate-600">
+                    มีบัญชีอยู่แล้ว? <a href="login.html" class="font-medium text-brand-600 hover:text-brand-500">เข้าสู่ระบบเลย</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(type, msg) {
+            const box = document.getElementById('alertBox');
+            const icon = document.getElementById('alertIcon');
+            const msgEl = document.getElementById('alertMessage');
+            
+            box.className = 'mb-6 p-4 rounded-xl text-sm flex items-start gap-3';
+            if(type === 'error') {
+                box.classList.add('bg-red-50', 'text-red-800', 'border', 'border-red-200');
+                icon.className = 'fa-solid fa-circle-exclamation mt-0.5 text-red-500 text-lg';
+            } else {
+                box.classList.add('bg-green-50', 'text-green-800', 'border', 'border-green-200');
+                icon.className = 'fa-solid fa-circle-check mt-0.5 text-green-500 text-lg';
+            }
+            msgEl.innerHTML = msg;
+            box.classList.remove('hidden');
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const pwd = document.getElementById('pwd').value;
+            const confirmPwd = document.getElementById('confirmPwd').value;
+
+            if(pwd !== confirmPwd) {
+                showAlert('error', 'รหัสผ่านทั้งสองช่องไม่ตรงกันครับ ลองพิมพ์ใหม่อีกรอบนะ');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('btnSpinner');
+            const text = document.getElementById('btnText');
+            
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            text.textContent = 'กำลังสร้างบัญชี...';
+            document.getElementById('alertBox').classList.add('hidden');
+
+            try {
+                // จำลอง API Call (เตรียมพร้อมสำหรับ Django DRF)
+                await new Promise(r => setTimeout(r, 1200));
+                
+                showAlert('success', 'สมัครสมาชิกสำเร็จ! กำลังพาไปหน้าเข้าสู่ระบบ...');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+
+            } catch (error) {
+                showAlert('error', 'ระบบขัดข้องนิดหน่อยครับ รบกวนลองใหม่ทีหลังนะ');
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+                text.textContent = 'สมัครสมาชิก';
+            }
+        }
+    </script>
+</body>
+</html>
