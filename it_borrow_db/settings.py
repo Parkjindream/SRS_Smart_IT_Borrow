@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     
     # Third Party Apps
     'rest_framework',
+    'rest_framework.authtoken',  # ต้องมีเพื่อใช้งาน Token
     'corsheaders',
     
     # Local Apps
@@ -82,6 +83,22 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# 3. การตั้งค่า REST Framework (เพิ่มใหม่ เพื่อให้ระบบ Token สมบูรณ์ 100%)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+
 # ตั้งค่า CORS ปลดล็อกการเชื่อมต่อ Frontend -> Backend
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Email SMTP Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@gmail.com' 
+EMAIL_HOST_PASSWORD = 'xxxx_xxxx_xxxx_xxxx'

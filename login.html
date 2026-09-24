@@ -3,122 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เข้าสู่ระบบ - IT Borrow</title>
+    <title>เข้าสู่ระบบ - IT Borrow System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Prompt', sans-serif; }
     </style>
 </head>
-<body class="bg-[#0f172a] min-h-screen flex flex-col">
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
 
-    <!-- Navbar สีขาว (อิงจากภาพ index.html) -->
-    <nav class="bg-white px-8 py-4 flex items-center justify-between shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 p-2 rounded-lg text-white">
-                <i class="fas fa-desktop"></i>
-            </div>
-            <div>
-                <h1 class="text-lg font-bold text-gray-900 leading-tight">IT Borrow</h1>
-                <p class="text-[10px] text-gray-500">ระบบยืม-คืนอุปกรณ์ไอที</p>
-            </div>
-        </div>
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
         
-        <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-            <a href="index.html" class="hover:text-blue-600 transition">หน้าแรก</a>
-            <a href="#" class="hover:text-blue-600 transition">รายการอุปกรณ์</a>
-            <a href="#" class="hover:text-blue-600 transition">ขั้นตอนการยืม</a>
-            <a href="#" class="hover:text-blue-600 transition">ระเบียบการยืม</a>
-        </div>
-
-        <div class="flex gap-3">
-            <a href="login.html" class="px-5 py-2 text-blue-600 text-sm font-medium hover:bg-blue-50 rounded-full transition">เข้าสู่ระบบ</a>
-            <a href="register.html" class="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition">ลงทะเบียน</a>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex items-center justify-center p-6 relative">
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 relative z-10">
+        <div class="p-6 sm:p-8 lg:p-10">
             <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-900">เข้าสู่ระบบ</h2>
-                <p class="text-gray-500 text-sm mt-1">ใช้อีเมลสถาบันเพื่อเข้าสู่ระบบ (นักศึกษา / เจ้าหน้าที่)</p>
+                <div class="inline-block p-2 rounded-2xl bg-slate-50 mb-3 border border-slate-100">
+                    <img id="siteLogo" src="logo.png" alt="โลโก้ระบบ" class="h-16 w-auto max-w-[200px] object-contain mx-auto" onerror="this.onerror=null; this.src='https://placehold.co/200x80/2563eb/ffffff?text=IT+BORROW+LOGO';">
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 tracking-tight">เข้าสู่ระบบ</h2>
+                <p class="text-slate-500 text-sm mt-1">ระบบยืม-คืนอุปกรณ์ไอที</p>
             </div>
 
-            <form id="loginForm" class="space-y-5" onsubmit="executeLogin(event)">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">อีเมลสถาบัน</label>
-                    <input type="email" id="email" required
-                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
-                        placeholder="เช่น 68030311@kmtil.ac.th">
-                </div>
+            <!-- กล่องแจ้งเตือน -->
+            <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm flex items-start space-x-3 transition-all duration-200">
+                <i id="alertIcon" class="fas fa-exclamation-circle text-lg mt-0.5 flex-shrink-0"></i>
+                <span id="alertMessage" class="flex-1 font-medium"></span>
+            </div>
 
+            <!-- ฟอร์มเข้าสู่ระบบ -->
+            <form id="loginForm" class="space-y-5">
+                
+                <!-- ตัวเลือกสถานะ -->
                 <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-sm font-semibold text-gray-700">รหัสผ่าน</label>
-                        <a href="#" class="text-xs text-blue-600 hover:underline">ลืมรหัสผ่าน?</a>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">เข้าสู่ระบบในฐานะ</label>
+                    <div class="relative">
+                        <select id="userRole" class="w-full pl-11 pr-10 py-3 text-sm sm:text-base border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white rounded-xl appearance-none transition-all">
+                            <option value="student">👨‍🎓 นักศึกษา / ผู้ใช้ทั่วไป</option>
+                            <option value="admin">👨‍💻 เจ้าหน้าที่ / ผู้ดูแลระบบ</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
                     </div>
-                    <input type="password" id="password" required
-                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
-                        placeholder="••••••••">
                 </div>
 
-                <!-- Alert Message -->
-                <div id="alertBox" class="hidden p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm flex items-center gap-2">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span id="alertText">อีเมลหรือรหัสผ่านไม่ถูกต้อง</span>
+                <!-- Username / Email -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">ชื่อผู้ใช้ หรือ อีเมล</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <input type="text" id="username" required
+                            class="w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="กรอกชื่อผู้ใช้หรืออีเมล">
+                    </div>
                 </div>
 
-                <button type="submit" 
-                    class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-blue-600/30 flex justify-center items-center gap-2">
-                    <i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">รหัสผ่าน</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <input type="password" id="password" required
+                            class="w-full pl-11 pr-12 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('password', 'eyeIcon')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
+                            <i id="eyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full flex justify-center items-center py-3.5 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 transition-all duration-200 mt-2">
+                    เข้าสู่ระบบ
                 </button>
             </form>
+
+            <div class="mt-8 text-center text-sm border-t border-slate-100 pt-6">
+                <span class="text-slate-500">ยังไม่มีบัญชีผู้ใช้?</span>
+                <a href="register.html" class="font-bold text-blue-600 hover:text-blue-700 hover:underline ml-1">สมัครสมาชิกที่นี่</a>
+            </div>
         </div>
-    </main>
+    </div>
 
-   <script>
-    async function executeLogin(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const alertBox = document.getElementById('alertBox');
-        const alertText = document.getElementById('alertText');
+    <script>
+        // กำหนดตำแหน่ง Server Backend
+        const API_BASE_URL = 'http://127.0.0.1:8000';
 
-        try {
-            const response = await fetch('http://127.0.0.1:8000/api/login/', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ email: email, password: password })
-            });
+        // 1. [เพิ่มใหม่] ตรวจสอบเมื่อโหลดหน้าเว็บ: ถ้าเคยล็อกอินแล้วให้เด้งไปหน้าหลักทันที
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const userStr = localStorage.getItem('user');
             
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                // บันทึกสถานะลงใน Browser
-                localStorage.setItem('userEmail', data.email);
-                localStorage.setItem('isStaff', data.is_staff);
-
-                // แยกหน้าอัตโนมัติ: ถ้าเป็นแอดมิน (is_staff = True) ไปหลังบ้าน, นักศึกษาไปหน้าแรก
-                if (data.is_staff) {
-                    window.location.href = 'admin_dashboard.html';
-                } else {
-                    window.location.href = 'index.html';
+            if (token && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    if (user.is_staff) {
+                        window.location.replace('admin_dashboard.html');
+                    } else {
+                        window.location.replace('index.html');
+                    }
+                } catch(e) {
+                    localStorage.clear(); // ถ้าข้อมูลพัง ให้ล้างทิ้ง
                 }
-            } else {
-                alertText.textContent = data.message || "การเข้าสู่ระบบล้มเหลว";
-                alertBox.classList.remove('hidden');
             }
-        } catch (err) {
-            console.error(err);
-            alertText.textContent = "ไม่สามารถเชื่อมต่อ Django API ได้ (โปรดตรวจสอบการรันเซิร์ฟเวอร์)";
-            alertBox.classList.remove('hidden');
+        });
+
+        // Toggle Password
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
         }
-    }
-</script>
+
+        // จัดการเมื่อกดปุ่ม Submit
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const roleSelection = document.getElementById('userRole').value;
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            showAlert('', 'hide');
+            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>กำลังตรวจสอบข้อมูล...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            try {
+                // เรียก API
+                const response = await fetch(`${API_BASE_URL}/api/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: usernameInput,
+                        password: passwordInput
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    const isStaff = data.is_staff === true;
+
+                    // ตรวจสอบ Role
+                    if (roleSelection === 'admin') {
+                        if (isStaff) {
+                            saveUserData(data);
+                            showAlert('เข้าสู่ระบบเจ้าหน้าที่สำเร็จ กำลังพาไปหน้าผู้ดูแลระบบ...', 'success');
+                            // ใช้ replace เพื่อไม่ให้ผู้ใช้กดปุ่มย้อนกลับ (Back) กลับมาหน้า Login ได้
+                            setTimeout(() => { window.location.replace('admin_dashboard.html'); }, 1000);
+                        } else {
+                            showAlert('คุณเป็นบัญชีทั่วไป ไม่มีสิทธิ์เข้าใช้งานในส่วนของ "เจ้าหน้าที่"', 'error');
+                            resetButton();
+                        }
+                    } else { // เลือกเป็น student
+                        saveUserData(data);
+                        showAlert('เข้าสู่ระบบสำเร็จ กำลังพาคุณเข้าสู่หน้าหลัก...', 'success');
+                        setTimeout(() => { window.location.replace('index.html'); }, 1000);
+                    }
+                } else {
+                    showAlert(data.message || 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง', 'error');
+                    resetButton();
+                }
+            } catch (error) {
+                console.error('Login Fetch Error:', error);
+                showAlert(`ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ (${API_BASE_URL}) ได้ กรุณาตรวจสอบว่าเซิร์ฟเวอร์กำลังทำงานอยู่`, 'error');
+                resetButton();
+            }
+        });
+
+        // 2. [แก้ไจสำคัญ] ฟังก์ชันนี้ถูกปรับปรุงให้บันทึกข้อมูลเป็น JSON Object เพื่อให้ index.html และ register.html ทำงานร่วมกันได้
+        function saveUserData(data) {
+            // สร้าง Object รวมข้อมูลผู้ใช้
+            const userData = {
+                username: data.username || '',
+                email: data.email || '',
+                first_name: data.first_name || '', // ดึงจาก Django (ถ้ามี)
+                last_name: data.last_name || '',   // ดึงจาก Django (ถ้ามี)
+                is_staff: data.is_staff || false,
+                avatar: data.avatar || ''
+            };
+
+            // บันทึก Token แยกไว้สำหรับแนบ Header ตอนดึงข้อมูล
+            localStorage.setItem('token', data.token || 'dummy-token');
+            // บันทึก user เป็น String JSON (จำเป็นมากสำหรับหน้า index.html)
+            localStorage.setItem('user', JSON.stringify(userData));
+        }
+
+        function showAlert(msg, type) {
+            const alertBox = document.getElementById('alertBox');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertMessage = document.getElementById('alertMessage');
+
+            if (type === 'hide') {
+                alertBox.classList.add('hidden');
+                return;
+            }
+
+            alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-emerald-50', 'text-emerald-700');
+            alertIcon.classList.remove('fa-exclamation-circle', 'fa-check-circle');
+
+            if (type === 'error') {
+                alertBox.classList.add('bg-red-50', 'text-red-700');
+                alertIcon.classList.add('fa-exclamation-circle');
+            } else if (type === 'success') {
+                alertBox.classList.add('bg-emerald-50', 'text-emerald-700');
+                alertIcon.classList.add('fa-check-circle');
+            }
+            alertMessage.textContent = msg;
+        }
+
+        function resetButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = 'เข้าสู่ระบบ';
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+        }
+    </script>
 </body>
 </html>

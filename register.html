@@ -3,84 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ลงทะเบียนนักศึกษา - ระบบยืม-คืนอุปกรณ์ไอที</title>
+    <title>สมัครสมาชิก - IT Borrow System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Prompt', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
 
-    <div class="w-full max-w-md relative z-10 py-6">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-white tracking-wide">ลงทะเบียนสิทธิ์ใช้งาน</h1>
-            <p class="text-slate-400 text-sm mt-1">สำหรับนักศึกษาภายในสถาบันเท่านั้น</p>
-        </div>
+    <div class="max-w-xl w-full bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden my-6">
+        
+        <div class="p-6 sm:p-8 lg:p-10">
+            <!-- แท็กรูปภาพโลโก้ HTML -->
+            <div class="text-center mb-8">
+                <div class="inline-block p-2 rounded-2xl bg-slate-50 mb-3 border border-slate-100">
+                    <img id="siteLogo" src="logo.png" alt="โลโก้ระบบ" class="h-16 w-auto max-w-[200px] object-contain mx-auto" onerror="this.onerror=null; this.src='https://placehold.co/200x80/2563eb/ffffff?text=IT+BORROW+LOGO';">
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 tracking-tight">ลงทะเบียนสมาชิกใหม่</h2>
+                <p class="text-slate-500 text-sm mt-1">สำหรับนักศึกษาและผู้ใช้งานทั่วไป</p>
+            </div>
 
-        <div class="bg-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 shadow-2xl">
-            <form id="registerForm" class="space-y-4" onsubmit="handleRegister(event)">
-                <div class="grid grid-cols-2 gap-3">
+            <!-- กล่องแจ้งเตือน -->
+            <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm flex items-start space-x-3 transition-all duration-200">
+                <i id="alertIcon" class="fas fa-exclamation-circle text-lg mt-0.5 flex-shrink-0"></i>
+                <span id="alertMessage" class="flex-1 font-medium"></span>
+            </div>
+
+            <form id="registerForm" class="space-y-4 sm:space-y-5">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">ชื่อจริง</label>
-                        <input type="text" id="firstName" required class="w-full px-3.5 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">ชื่อจริง</label>
+                        <input type="text" id="firstName" required
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="สมชาย">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">นามสกุล</label>
-                        <input type="text" id="lastName" required class="w-full px-3.5 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">นามสกุล</label>
+                        <input type="text" id="lastName" required
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="ใจดี">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">ชื่อผู้ใช้ (Username)</label>
+                        <input type="text" id="regUsername" required
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="std660123">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">อีเมล (Email)</label>
+                        <input type="email" id="regEmail" required
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="student@university.ac.th">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">รหัสนักศึกษา</label>
-                    <input type="text" id="studentId" placeholder="เช่น 65012345" required class="w-full px-3.5 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)</label>
+                    <div class="relative">
+                        <input type="password" id="regPassword" required minlength="8"
+                            class="w-full pl-4 pr-12 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('regPassword', 'eyeIcon1')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
+                            <i id="eyeIcon1" class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">อีเมลสถาบัน (@university.ac.th)</label>
-                    <input type="email" id="regEmail" placeholder="student@university.ac.th" required class="w-full px-3.5 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">ยืนยันรหัสผ่านอีกครั้ง</label>
+                    <div class="relative">
+                        <input type="password" id="confirmPassword" required
+                            class="w-full pl-4 pr-12 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-slate-50 focus:bg-white text-sm sm:text-base transition-all outline-none"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('confirmPassword', 'eyeIcon2')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
+                            <i id="eyeIcon2" class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">กำหนดรหัสผ่าน</label>
-                    <input type="password" id="regPassword" placeholder="ความยาวอย่างน้อย 8 ตัวอักษร" required class="w-full px-3.5 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 focus:outline-none">
+                <div class="flex items-start pt-1">
+                    <div class="flex items-center h-5">
+                        <input id="acceptTerms" type="checkbox" required class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500">
+                    </div>
+                    <label for="acceptTerms" class="ml-2.5 text-sm text-slate-600 cursor-pointer">
+                        ฉันยอมรับ <a href="#" class="font-medium text-blue-600 hover:underline">เงื่อนไขการใช้งาน</a>
+                    </label>
                 </div>
 
-                <div id="regAlert" class="hidden p-3 rounded-xl text-xs"></div>
-
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-blue-600/30 mt-2">
-                    ยืนยันการลงทะเบียน
+                <button type="submit" id="submitRegBtn" class="w-full flex justify-center items-center py-3.5 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 transition-all duration-200 mt-4">
+                    ลงทะเบียนเข้าใช้งาน
                 </button>
             </form>
 
-            <div class="mt-6 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-400">
-                มีบัญชีผู้ใช้งานอยู่แล้ว? 
-                <a href="login.html" class="text-blue-400 hover:underline font-semibold ml-1">กลับไปหน้าเข้าสู่ระบบ</a>
+            <div class="mt-8 text-center text-sm border-t border-slate-100 pt-6">
+                <span class="text-slate-500">มีบัญชีผู้ใช้อยู่แล้ว?</span>
+                <a href="login.html" class="font-bold text-blue-600 hover:text-blue-700 hover:underline ml-1">กลับไปเข้าสู่ระบบ</a>
             </div>
         </div>
     </div>
 
     <script>
-        function handleRegister(e) {
-            e.preventDefault();
-            const regAlert = document.getElementById('regAlert');
-            const password = document.getElementById('regPassword').value;
+        const API_BASE_URL = 'http://127.0.0.1:8000';
 
-            if (password.length < 8) {
-                regAlert.className = "p-3 rounded-xl text-xs bg-red-500/10 border border-red-500/20 text-red-400";
-                regAlert.textContent = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
-                regAlert.classList.remove('hidden');
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitBtn = document.getElementById('submitRegBtn');
+
+            if (password !== confirmPassword) {
+                showAlert('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน', 'error');
                 return;
             }
 
-            regAlert.className = "p-3 rounded-xl text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400";
-            regAlert.textContent = "ลงทะเบียนสำเร็จ! กำลังพากลับไปหน้าเข้าสู่ระบบ...";
-            regAlert.classList.remove('hidden');
+            showAlert('', 'hide');
+            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>กำลังบันทึกข้อมูล...';
+            submitBtn.disabled = true;
 
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1500);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password,
+                        first_name: firstName,
+                        last_name: lastName
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showAlert('ลงทะเบียนสำเร็จ! กำลังนำคุณไปยังหน้าเข้าสู่ระบบ...', 'success');
+                    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                } else {
+                    showAlert(data.message || 'เกิดข้อผิดพลาดในการลงทะเบียน', 'error');
+                    resetBtn();
+                }
+            } catch (error) {
+                console.error('Register Fetch Error:', error);
+                showAlert(`ไม่สามารถเชื่อมต่อกับ Django Server (${API_BASE_URL}) ได้`, 'error');
+                resetBtn();
+            }
+        });
+
+        function showAlert(msg, type) {
+            const alertBox = document.getElementById('alertBox');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertMessage = document.getElementById('alertMessage');
+
+            if (type === 'hide') {
+                alertBox.classList.add('hidden');
+                return;
+            }
+
+            alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-emerald-50', 'text-emerald-700');
+            alertIcon.classList.remove('fa-exclamation-circle', 'fa-check-circle');
+
+            if (type === 'error') {
+                alertBox.classList.add('bg-red-50', 'text-red-700');
+                alertIcon.classList.add('fa-exclamation-circle');
+            } else if (type === 'success') {
+                alertBox.classList.add('bg-emerald-50', 'text-emerald-700');
+                alertIcon.classList.add('fa-check-circle');
+            }
+            alertMessage.textContent = msg;
+        }
+
+        function resetBtn() {
+            const submitBtn = document.getElementById('submitRegBtn');
+            submitBtn.innerHTML = 'ลงทะเบียนเข้าใช้งาน';
+            submitBtn.disabled = false;
         }
     </script>
 </body>

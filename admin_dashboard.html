@@ -3,149 +3,383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Equipment Loan System - Admin Dashboard</title>
+    <title>Admin Dashboard - IT Borrow System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Prompt', sans-serif; background-color: #f3f4f6; }
-        .sidebar-active { background-color: #2563eb; color: white; }
-        .sidebar-hover:hover { background-color: #1e293b; }
+        body { font-family: 'Prompt', sans-serif; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="bg-gray-100 min-h-screen flex text-gray-800">
 
-    <!-- Sidebar ด้านซ้าย -->
-    <aside class="w-64 bg-[#0f172a] text-gray-300 flex flex-col justify-between">
+    <!-- 1. SIDEBAR (ไซด์บาร์สีเข้ม พร้อมพื้นที่ใส่โลโก้สถาบัน) -->
+    <aside class="w-64 bg-[#0f172a] text-white flex flex-col justify-between min-h-screen shadow-xl sticky top-0 h-screen">
         <div>
-            <!-- Logo & Title -->
-            <div class="flex items-center gap-3 p-6 border-b border-gray-700">
-                <div class="bg-blue-500 p-2 rounded-lg text-white">
-                    <i class="fas fa-laptop"></i>
+            <!-- โลโก้สถาบัน -->
+            <div class="p-6 border-b border-slate-800 flex flex-col items-center text-center">
+                <div class="bg-white p-3 rounded-2xl mb-3 shadow-md w-full flex justify-center items-center h-20">
+                    <!-- คุณสามารถเปลี่ยน src="logo.png" เป็นที่อยู่ไฟล์ภาพโลโก้สถาบันของคุณได้ที่นี่ -->
+                    <img id="institutionLogo" src="https://via.placeholder.com/180x60/ffffff/0f172a?text=KMITL+LOGO" 
+                         alt="โลโก้สถาบัน" class="max-h-full max-w-full object-contain">
                 </div>
-                <div>
-                    <h1 class="text-sm font-bold text-white leading-tight">ระบบยืม-คืนอุปกรณ์ไอที</h1>
-                    <p class="text-xs text-blue-400">แผงควบคุมเจ้าหน้าที่</p>
-                </div>
+                <h1 class="text-base font-bold text-white tracking-wide">IT Borrow System</h1>
+                <p class="text-[11px] text-slate-400">ระบบจัดการยืม-คืนอุปกรณ์ไอที</p>
             </div>
 
-            <!-- Menus -->
-            <nav class="mt-6 px-4 space-y-2">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-active">
-                    <i class="fas fa-chart-pie w-5"></i> แดชบอร์ด
-                </a>
-                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-lg sidebar-hover transition">
-                    <div class="flex items-center gap-3"><i class="fas fa-box-open w-5"></i> รายการรอส่งมอบ</div>
-                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
-                </a>
-                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-lg sidebar-hover transition">
-                    <div class="flex items-center gap-3"><i class="fas fa-undo w-5"></i> รายการรอรับคืน</div>
-                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-hover transition">
-                    <i class="fas fa-desktop w-5"></i> จัดการอุปกรณ์
-                </a>
-                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-lg sidebar-hover transition">
-                    <div class="flex items-center gap-3"><i class="fas fa-users w-5"></i> จัดการผู้ใช้/บทลงโทษ</div>
-                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
-                </a>
+            <!-- เมนูนำทาง -->
+            <nav class="p-4 space-y-1 text-sm font-medium">
+                <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center gap-3 px-4 py-3 text-blue-400 bg-slate-800/80 rounded-xl transition">
+                    <i class="fas fa-chart-pie w-5"></i> ภาพรวมระบบ
+                </button>
+                <button onclick="switchTab('handovers')" id="nav-handovers" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-xl transition">
+                    <i class="fas fa-hand-holding-box w-5"></i> รายการส่งมอบ
+                </button>
+                <button onclick="switchTab('returns')" id="nav-returns" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-xl transition">
+                    <i class="fas fa-undo-alt w-5"></i> รายการรับคืน
+                </button>
+                <button onclick="switchTab('equipment')" id="nav-equipment" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-xl transition">
+                    <i class="fas fa-microchip w-5"></i> จัดการอุปกรณ์
+                </button>
+                <button onclick="switchTab('penalties')" id="nav-penalties" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-xl transition">
+                    <i class="fas fa-exclamation-triangle w-5"></i> จัดการบทลงโทษ
+                </button>
             </nav>
         </div>
 
-        <!-- Admin Profile -->
-        <div class="p-4 border-t border-gray-700 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold">
-                ป
-            </div>
-            <div>
-                <p class="text-sm font-bold text-white">อาจารย์ปิยะ สมศักดิ์</p>
-                <a href="#" class="text-xs text-gray-400 hover:text-white transition">ออกจากระบบ</a>
-            </div>
+        <!-- ปุ่มออกจากระบบด้านล่างไซด์บาร์ -->
+        <div class="p-4 border-t border-slate-800">
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white rounded-xl text-sm font-semibold transition">
+                <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
+            </button>
         </div>
     </aside>
 
-    <!-- Main Content พื้นที่ด้านขวา -->
-    <main class="flex-1 flex flex-col overflow-y-auto">
-        
-        <!-- Header -->
-        <header class="bg-white shadow-sm p-6 flex justify-between items-center">
+    <!-- 2. MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+
+        <!-- Top Header Bar (แสดงข้อมูลแอดมินที่ล็อกอินจริง) -->
+        <header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800">แดชบอร์ดภาพรวม</h2>
-                <p class="text-sm text-gray-500">สรุปสถานะระบบยืม-คืนอุปกรณ์ไอที วันนี้</p>
+                <h2 id="pageTitle" class="text-xl font-bold text-gray-800">ภาพรวมระบบ</h2>
+                <p class="text-xs text-gray-500">จัดการข้อมูลอุปกรณ์และการยืมคืนสำหรับผู้ดูแลระบบ</p>
             </div>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow">
-                <i class="fas fa-file-export mr-2"></i> ออกรายงาน
-            </button>
+
+            <!-- กล่องแสดงชื่อแอดมินจริง -->
+            <div class="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-200">
+                <div class="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="text-left">
+                    <p id="adminNameDisplay" class="text-sm font-bold text-gray-900 leading-tight">กำลังโหลด...</p>
+                    <p id="adminEmailDisplay" class="text-[11px] font-medium text-blue-600">ผู้ดูแลระบบ (Admin)</p>
+                </div>
+            </div>
         </header>
 
-        <!-- Dashboard Cards -->
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-                <!-- Card 1 -->
-                <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
-                    <i class="fas fa-desktop text-4xl opacity-20 absolute top-4 right-4"></i>
-                    <h3 class="text-3xl font-bold">48</h3>
-                    <p class="text-sm opacity-90">อุปกรณ์ทั้งหมด</p>
-                </div>
-                <!-- Card 2 -->
-                <div class="bg-orange-500 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
-                    <i class="fas fa-box text-4xl opacity-20 absolute top-4 right-4"></i>
-                    <h3 class="text-3xl font-bold">19</h3>
-                    <p class="text-sm opacity-90">ถูกยืมอยู่</p>
-                </div>
-                <!-- Card 3 -->
-                <div class="bg-red-600 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
-                    <i class="fas fa-exclamation-circle text-4xl opacity-20 absolute top-4 right-4"></i>
-                    <h3 class="text-3xl font-bold">2</h3>
-                    <p class="text-sm opacity-90">เกินกำหนดคืน</p>
-                </div>
-                <!-- Card 4 -->
-                <div class="bg-purple-600 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
-                    <i class="fas fa-ban text-4xl opacity-20 absolute top-4 right-4"></i>
-                    <h3 class="text-3xl font-bold">2</h3>
-                    <p class="text-sm opacity-90">ผู้ใช้ถูกระงับบัญชี</p>
-                </div>
-                <!-- Card 5 -->
-                <div class="bg-teal-500 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between h-32 relative overflow-hidden">
-                    <i class="fas fa-hourglass-half text-4xl opacity-20 absolute top-4 right-4"></i>
-                    <h3 class="text-3xl font-bold">1</h3>
-                    <p class="text-sm opacity-90">รอส่งมอบอุปกรณ์</p>
-                </div>
-            </div>
+        <!-- Dynamic Tab Contents -->
+        <main class="p-8 space-y-8">
 
-            <!-- Recent Transactions Table -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-history text-gray-400 mr-2"></i> รายการล่าสุด</h3>
-                    <a href="#" class="text-sm text-blue-600 hover:underline">ดูทั้งหมด &rarr;</a>
+            <!-- ================= TAB 1: OVERVIEW ================= -->
+            <section id="tab-overview" class="tab-content space-y-6">
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">อุปกรณ์ทั้งหมด</p>
+                            <h3 id="statTotal" class="text-2xl font-bold text-gray-900 mt-1">8 รายการ</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">รอส่งมอบอุปกรณ์</p>
+                            <h3 id="statHandover" class="text-2xl font-bold text-amber-600 mt-1">2 รายการ</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-hand-holding"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">กำลังถูกยืมใช้งาน</p>
+                            <h3 id="statBorrowed" class="text-2xl font-bold text-indigo-600 mt-1">1 รายการ</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">เกินกำหนดส่งคืน</p>
+                            <h3 id="statLate" class="text-2xl font-bold text-red-600 mt-1">0 รายการ</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-600">
-                        <thead class="text-xs uppercase bg-gray-50 text-gray-500 border-b">
-                            <tr>
-                                <th class="px-4 py-3">รหัสการจอง</th>
-                                <th class="px-4 py-3">อุปกรณ์</th>
-                                <th class="px-4 py-3">ผู้ยืม</th>
-                                <th class="px-4 py-3">วันที่เริ่ม-สิ้นสุด</th>
-                                <th class="px-4 py-3 text-center">สถานะ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-recent-bookings">
-                            <!-- ข้อมูลจำลอง (เดี๋ยวเราจะใช้ JS ดึงจาก API มาใส่ตรงนี้) -->
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="px-4 py-3 font-medium text-gray-900">BK-2024-0001</td>
-                                <td class="px-4 py-3">โน้ตบุ๊ก Dell Latitude 5520</td>
-                                <td class="px-4 py-3">นายสมชาย ใจดี</td>
-                                <td class="px-4 py-3">2024-12-15 ถึง 2024-12-17</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">กำลังยืม</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- Recent Activity Table -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                    <h3 class="font-bold text-gray-900 text-base mb-4 flex items-center gap-2">
+                        <i class="fas fa-history text-blue-600"></i> รายการขอยืมล่าสุดในระบบ
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase">
+                                    <th class="py-3 px-4">ผู้ยืม</th>
+                                    <th class="py-3 px-4">อุปกรณ์ที่ยืม</th>
+                                    <th class="py-3 px-4">หมวดหมู่</th>
+                                    <th class="py-3 px-4">วันที่นัดรับ</th>
+                                    <th class="py-3 px-4">สถานะ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentActivityTable" class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td class="py-3.5 px-4 font-medium text-gray-900">นักศึกษา รหัส 68030311</td>
+                                    <td class="py-3.5 px-4">ESP32 Wi-Fi + Bluetooth Board</td>
+                                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-purple-50 text-purple-600 rounded-lg text-xs font-semibold">ไมโครคอนโทรลเลอร์/IoT</span></td>
+                                    <td class="py-3.5 px-4 text-gray-500">25 ก.ย. 2026</td>
+                                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-semibold">อนุมัติแล้ว (รอรับของ)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </main>
+            </section>
+
+            <!-- ================= TAB 2: HANDOVERS ================= -->
+            <section id="tab-handovers" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                    <h3 class="font-bold text-gray-900 text-lg mb-2">รายการอุปกรณ์ที่รอส่งมอบให้นักศึกษา</h3>
+                    <p class="text-xs text-gray-500 mb-6">ตรวจสอบสิทธิ์ และกดส่งมอบเมื่อนักศึกษามารับอุปกรณ์ ณ ศูนย์ไอที</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase bg-gray-50">
+                                    <th class="py-3 px-4">รหัสยืม</th>
+                                    <th class="py-3 px-4">ชื่อผู้ยืม</th>
+                                    <th class="py-3 px-4">อุปกรณ์</th>
+                                    <th class="py-3 px-4">ซีเรียล</th>
+                                    <th class="py-3 px-4 text-center">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td class="py-3.5 px-4 font-bold text-blue-600">#BK-2026-01</td>
+                                    <td class="py-3.5 px-4 font-medium">สมชาย ใจดี (68030012)</td>
+                                    <td class="py-3.5 px-4">Arduino Uno R3 Board</td>
+                                    <td class="py-3.5 px-4 text-gray-500">IOT-001</td>
+                                    <td class="py-3.5 px-4 text-center">
+                                        <button onclick="confirmAction('ยืนยันการส่งมอบอุปกรณ์ให้นักศึกษา')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition shadow">
+                                            <i class="fas fa-check-circle mr-1"></i> ยืนยันการส่งมอบ
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 3: RETURNS ================= -->
+            <section id="tab-returns" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                    <h3 class="font-bold text-gray-900 text-lg mb-2">รายการรับคืนอุปกรณ์เข้าคลัง</h3>
+                    <p class="text-xs text-gray-500 mb-6">ตรวจสอบสภาพอุปกรณ์เมื่อผู้ยืมนำมาคืน</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase bg-gray-50">
+                                    <th class="py-3 px-4">อุปกรณ์</th>
+                                    <th class="py-3 px-4">ผู้คืน</th>
+                                    <th class="py-3 px-4">กำหนดคืน</th>
+                                    <th class="py-3 px-4">สภาพอุปกรณ์</th>
+                                    <th class="py-3 px-4 text-center">ดำเนินการ</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td class="py-3.5 px-4 font-medium">iPad Air 5</td>
+                                    <td class="py-3.5 px-4">อนาวิน (68030311)</td>
+                                    <td class="py-3.5 px-4 text-gray-500">28 ก.ย. 2026</td>
+                                    <td class="py-3.5 px-4">
+                                        <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-xs">
+                                            <option>สมบูรณ์ปกติ</option>
+                                            <option>ชำรุดเสียหาย (ปรับ)</option>
+                                            <option>อุปกรณ์ไม่ครบ</option>
+                                        </select>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center">
+                                        <button onclick="confirmAction('บันทึกการรับคืนอุปกรณ์สำเร็จ')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl text-xs transition shadow">
+                                            <i class="fas fa-arrow-down mr-1"></i> ยืนยันรับคืน
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 4: EQUIPMENT MANAGEMENT ================= -->
+            <section id="tab-equipment" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-lg">รายการอุปกรณ์ไอทีในระบบ</h3>
+                            <p class="text-xs text-gray-500">จัดหมวดหมู่ โน้ตบุ๊ก, แท็บเล็ต, ไมโครคอนโทรลเลอร์ (Arduino, ESP32, ESP8266)</p>
+                        </div>
+                        <button onclick="alert('ระบบเปิดฟอร์มเพิ่มอุปกรณ์ใหม่')" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-2">
+                            <i class="fas fa-plus"></i> เพิ่มอุปกรณ์ใหม่
+                        </button>
+                    </div>
+
+                    <!-- Filter Categories -->
+                    <div class="flex gap-2 border-b border-gray-100 pb-4 mb-4 overflow-x-auto text-xs font-medium">
+                        <button onclick="loadEquipments('all')" class="px-3.5 py-1.5 bg-blue-600 text-white rounded-lg">ทั้งหมด</button>
+                        <button onclick="loadEquipments('คอมพิวเตอร์/โน้ตบุ๊ก')" class="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg">คอมพิวเตอร์/โน้ตบุ๊ก</button>
+                        <button onclick="loadEquipments('แท็บเล็ต')" class="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg">แท็บเล็ต</button>
+                        <button onclick="loadEquipments('ไมโครคอนโทรลเลอร์/IoT')" class="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg">ไมโครคอนโทรลเลอร์ & IoT</button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase bg-gray-50">
+                                    <th class="py-3 px-4">ซีเรียล/รหัส</th>
+                                    <th class="py-3 px-4">ชื่ออุปกรณ์</th>
+                                    <th class="py-3 px-4">หมวดหมู่</th>
+                                    <th class="py-3 px-4">สถานะ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equipmentListTable" class="text-sm divide-y divide-gray-100">
+                                <!-- Data will load dynamically from Django API -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 5: PENALTIES ================= -->
+            <section id="tab-penalties" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                    <h3 class="font-bold text-gray-900 text-lg mb-2">จัดการบทลงโทษและค่าปรับ</h3>
+                    <p class="text-xs text-gray-500 mb-6">รายการผู้ใช้งานที่ส่งคืนล่าช้ากว่ากำหนด หรืออุปกรณ์ชำรุด</p>
+
+                    <div class="p-8 text-center border-2 border-dashed border-gray-200 rounded-2xl text-gray-400">
+                        <i class="fas fa-shield-check text-4xl mb-2 text-green-500"></i>
+                        <p class="text-sm font-semibold text-gray-700">ขณะนี้ไม่มีรายการผู้ใช้งานที่ติดบทลงโทษ</p>
+                        <p class="text-xs text-gray-400 mt-1">ระบบจะแสดงข้อมูลโดยอัตโนมัติหากมีผู้ยืมเกินกำหนด</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- JavaScript Handling API & Interactivity -->
+    <script>
+        // 1. ตรวจสอบล็อกอินและดึงชื่อแอดมินจริงมาแสดงผล
+        document.addEventListener('DOMContentLoaded', () => {
+            const userEmail = localStorage.getItem('userEmail');
+            const username = localStorage.getItem('username');
+            const isStaff = localStorage.getItem('isStaff');
+
+            // หากยังไม่ได้ล็อกอิน ให้เด้งกลับไป login.html
+            if (!userEmail) {
+                alert('กรุณาเข้าสู่ระบบก่อนเข้าใช้งาน');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // แสดงชื่อแอดมินจริงแบบไดนามิก (ไม่มีชื่ออาจารย์สมศักดิ์แล้ว)
+            document.getElementById('adminNameDisplay').textContent = username || userEmail.split('@')[0];
+            document.getElementById('adminEmailDisplay').textContent = userEmail;
+
+            // โหลดรายการอุปกรณ์ไอทีจาก Django API
+            fetchEquipmentsFromAPI();
+        });
+
+        // 2. ดึงข้อมูลอุปกรณ์จาก Django API หลังบ้าน
+        async function fetchEquipmentsFromAPI() {
+            const tableBody = document.getElementById('equipmentListTable');
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/equipments/');
+                const data = await response.json();
+
+                if (Array.isArray(data) && data.length > 0) {
+                    renderEquipmentTable(data);
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-400 text-xs">ไม่พบข้อมูลอุปกรณ์ในระบบ</td></tr>`;
+                }
+            } catch (err) {
+                console.error("API Error:", err);
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-red-500 text-xs">ไม่สามารถเชื่อมต่อ Django API ได้</td></tr>`;
+            }
+        }
+
+        // วาดตารางอุปกรณ์
+        function renderEquipmentTable(items) {
+            const tableBody = document.getElementById('equipmentListTable');
+            tableBody.innerHTML = items.map(item => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="py-3.5 px-4 font-mono text-xs font-bold text-gray-600">${item.serial_number || 'N/A'}</td>
+                    <td class="py-3.5 px-4 font-semibold text-gray-900">${item.name}</td>
+                    <td class="py-3.5 px-4">
+                        <span class="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold">
+                            ${item.category || 'อุปกรณ์ทั่วไป'}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        ${getStatusBadge(item.status)}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusBadge(status) {
+            if (status === 'พร้อมใช้งาน') {
+                return `<span class="px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs font-semibold"><i class="fas fa-check-circle mr-1"></i> พร้อมใช้งาน</span>`;
+            } else if (status === 'ถูกยืม') {
+                return `<span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold"><i class="fas fa-clock mr-1"></i> ถูกยืม</span>`;
+            } else {
+                return `<span class="px-2.5 py-1 bg-red-50 text-red-700 rounded-full text-xs font-semibold"><i class="fas fa-wrench mr-1"></i> ${status}</span>`;
+            }
+        }
+
+        // 3. ระบบสลับแท็บเมนู
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            const titles = {
+                'overview': 'ภาพรวมระบบ',
+                'handovers': 'รายการส่งมอบอุปกรณ์',
+                'returns': 'รายการรับคืนอุปกรณ์',
+                'equipment': 'จัดการอุปกรณ์ไอที',
+                'penalties': 'จัดการบทลงโทษ'
+            };
+            document.getElementById('pageTitle').textContent = titles[tabName] || 'Admin Dashboard';
+        }
+
+        // 4. ระบบ Logout ออกจากระบบ
+        function handleLogout() {
+            if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+
+        function confirmAction(msg) {
+            alert(msg);
+        }
+    </script>
 </body>
 </html>
