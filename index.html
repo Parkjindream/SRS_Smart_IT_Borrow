@@ -6,7 +6,7 @@
     <title>IT Borrow System - ศูนย์บริการยืม-คืนอุปกรณ์เทคโนโลยีสารสนเทศ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ไลบรารีสร้าง QR Code -->
+    <!-- ไลบรารีสร้าง QR Code จากรหัสจริง -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
@@ -18,12 +18,12 @@
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Toast Notice แจ้งเตือนส่งอีเมล / เตือนสิทธิ์ -->
+    <!-- Toast Notice แจ้งเตือนส่งอีเมล / สถานะระบบ -->
     <div id="toastNotification" class="fixed top-20 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out max-w-md w-full bg-white rounded-2xl shadow-2xl border-l-4 border-blue-600 p-4 flex items-start space-x-3">
         <div id="toastIcon" class="text-blue-600 text-xl mt-0.5"><i class="fas fa-envelope-circle-check"></i></div>
         <div class="flex-1">
-            <h4 id="toastTitle" class="font-bold text-sm text-slate-800">ส่งอีเมลแจ้งเตือนเรียบร้อย</h4>
-            <p id="toastMessage" class="text-xs text-slate-600 mt-0.5">ระบบได้ส่งรายละเอียดการจองไปยังอีเมลของคุณแล้ว</p>
+            <h4 id="toastTitle" class="font-bold text-sm text-slate-800">แจ้งเตือนระบบ</h4>
+            <p id="toastMessage" class="text-xs text-slate-600 mt-0.5">-</p>
         </div>
         <button onclick="hideToast()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
     </div>
@@ -44,7 +44,7 @@
                 <!-- Global Search Header Bar -->
                 <div class="flex-1 flex items-center justify-center px-8 hidden md:flex">
                     <div class="w-full max-w-md relative">
-                        <input type="text" id="searchInput" placeholder="ค้นหาชื่ออุปกรณ์, รหัสคุรุภัณฑ์, หรือแบรนด์..." 
+                        <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="ค้นหาชื่ออุปกรณ์, รหัสคุรุภัณฑ์, หรือหมวดหมู่..."
                             class="w-full pl-10 pr-4 py-2 bg-slate-100/80 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition text-xs sm:text-sm">
                         <i class="fas fa-search absolute left-3.5 top-3 text-slate-400 text-xs"></i>
                     </div>
@@ -52,9 +52,9 @@
 
                 <!-- User Controls & Active Status Pill -->
                 <div class="flex items-center space-x-3">
-                    <button onclick="scrollToActiveLoan()" id="navActiveLoanBadge" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border hover:bg-slate-200 transition">
-                        <i class="fas fa-box text-blue-600"></i>
-                        <span>สถานะการยืม: <strong id="navLoanStatusText" class="text-slate-800">ไม่มีรายการค้าง</strong></span>
+                    <button onclick="scrollToActiveLoan()" id="navActiveLoanBadge" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border hover:bg-slate-200 transition">
+                        <i id="navLoanIcon" class="fas fa-box text-blue-600"></i>
+                        <span>สถานะการยืม: <strong id="navLoanStatusText" class="text-slate-800">กำลังตรวจสอบ...</strong></span>
                     </button>
 
                     <button onclick="openProfileModal()" class="flex items-center space-x-2 p-1.5 rounded-full hover:bg-slate-100 transition border border-slate-200/60">
@@ -73,7 +73,7 @@
     <!-- Main Content Container -->
     <main class="pt-16">
 
-        <!-- HERO BANNER SECTION (International Standard Style) -->
+        <!-- HERO BANNER SECTION -->
         <section class="relative bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-900 text-white pt-12 pb-20 overflow-hidden">
             <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80')] opacity-10 bg-cover bg-center"></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -89,7 +89,7 @@
                         <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto lg:mx-0 mb-8 font-light">
                             จองยืมโน้ตบุ๊ก กล้องถ่ายภาพ และอุปกรณ์ดิจิทัลล่วงหน้า รับของง่ายผ่านการยืมสแกนหน้าร้าน ควบคุมสิทธิ์ยุติธรรม 1 บัญชีต่อ 1 รายการ
                         </p>
-                        
+
                         <div class="flex flex-wrap justify-center lg:justify-start gap-4 text-xs font-semibold">
                             <button onclick="scrollToCatalog()" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center space-x-2">
                                 <i class="fas fa-laptop-house"></i>
@@ -102,21 +102,21 @@
                         </div>
                     </div>
 
-                    <!-- Counter / Live Platform Stats -->
+                    <!-- Platform Live Stats -->
                     <div class="lg:col-span-5 grid grid-cols-2 gap-4">
                         <div class="glass-card p-5 rounded-2xl border border-white/10 text-slate-800">
                             <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-3 font-bold">
                                 <i class="fas fa-laptop text-lg"></i>
                             </div>
-                            <p class="text-2xl font-bold text-slate-900" id="statTotalItems">04</p>
-                            <p class="text-xs text-slate-500 mt-1">อุปกรณ์พร้อมให้บริการ</p>
+                            <p class="text-2xl font-bold text-slate-900" id="statTotalItems">0</p>
+                            <p class="text-xs text-slate-500 mt-1">อุปกรณ์พร้อมให้บริการในระบบ</p>
                         </div>
                         <div class="glass-card p-5 rounded-2xl border border-white/10 text-slate-800">
                             <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 mb-3 font-bold">
                                 <i class="fas fa-shield-halved text-lg"></i>
                             </div>
-                            <p class="text-2xl font-bold text-slate-900">1 เครื่อง</p>
-                            <p class="text-xs text-slate-500 mt-1">จำกัดสิทธิ์ยืมต่อบัญชี</p>
+                            <p class="text-2xl font-bold text-slate-900">1 รายการ</p>
+                            <p class="text-xs text-slate-500 mt-1">จำกัดสิทธิ์ยืมต่อ 1 บัญชีผู้ใช้</p>
                         </div>
                         <div class="glass-card p-5 rounded-2xl border border-white/10 text-slate-800">
                             <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-3 font-bold">
@@ -137,22 +137,26 @@
             </div>
         </section>
 
-        <!-- WIDGET: ACTIVE LOAN STATUS TRACKER (จะปรากฏขึ้นอย่างโดดเด่นเมื่อมียืมค้างอยู่) -->
-        <section id="activeLoanSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 mb-12 hidden">
-            <!-- Dynamic Content Rendered by JS -->
+        <!-- DYNAMIC ACTIVE LOAN TRACKER (แสดงข้อมูลจริงของรายการจองปัจจุบัน) -->
+        <section id="activeLoanSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 mb-12">
+            <div id="activeLoanContainer" class="bg-white rounded-3xl p-6 shadow-xl border border-slate-200">
+                <div class="flex items-center justify-between text-slate-400">
+                    <p class="text-xs">กำลังตรวจสอบรายการจองในระบบ...</p>
+                </div>
+            </div>
         </section>
 
-        <!-- CATEGORIES SPOTLIGHT CAROUSEL / EXPLORATION -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- CATEGORIES SPOTLIGHT -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-xl font-extrabold text-slate-800">สำรวจตามหมวดหมู่</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">เลือกอุปกรณ์ที่เหมาะกับงานของคุณ</p>
+                    <p class="text-xs text-slate-500 mt-0.5">เลือกอุปกรณ์ที่ตอบโจทย์ตามการใช้งานของคุณ</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div onclick="filterCategory('แล็ปท็อป')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
+                <div onclick="quickFilterCategory('แล็ปท็อป')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
                     <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto text-blue-600 mb-3 group-hover:bg-blue-600 group-hover:text-white transition">
                         <i class="fas fa-laptop text-2xl"></i>
                     </div>
@@ -160,7 +164,7 @@
                     <p class="text-[11px] text-slate-400 mt-1">MacBook, Dell, ThinkPad</p>
                 </div>
 
-                <div onclick="filterCategory('กล้อง')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
+                <div onclick="quickFilterCategory('กล้อง')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
                     <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto text-emerald-600 mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
                         <i class="fas fa-camera text-2xl"></i>
                     </div>
@@ -168,7 +172,7 @@
                     <p class="text-[11px] text-slate-400 mt-1">Mirrorless, DSLR, ไมโครโฟน</p>
                 </div>
 
-                <div onclick="filterCategory('อุปกรณ์เสริม')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
+                <div onclick="quickFilterCategory('อุปกรณ์เสริม')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
                     <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto text-purple-600 mb-3 group-hover:bg-purple-600 group-hover:text-white transition">
                         <i class="fas fa-tablet-screen-button text-2xl"></i>
                     </div>
@@ -176,7 +180,7 @@
                     <p class="text-[11px] text-slate-400 mt-1">iPad, สายแปลง, Adapter</p>
                 </div>
 
-                <div onclick="filterCategory('ทั้งหมด')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
+                <div onclick="quickFilterCategory('ทั้งหมด')" class="bg-white p-4 rounded-2xl border border-slate-200/80 hover:shadow-lg hover:border-blue-500 transition cursor-pointer group text-center">
                     <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto text-amber-600 mb-3 group-hover:bg-amber-600 group-hover:text-white transition">
                         <i class="fas fa-layer-group text-2xl"></i>
                     </div>
@@ -195,21 +199,24 @@
                 </div>
 
                 <!-- Category Filter Buttons -->
-                <div class="flex space-x-2 overflow-x-auto hide-scrollbar pb-1">
-                    <button onclick="setCategoryFilter('ทั้งหมด', this)" class="cat-filter-btn px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition">ทั้งหมด</button>
-                    <button onclick="setCategoryFilter('แล็ปท็อป', this)" class="cat-filter-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition">แล็ปท็อป</button>
-                    <button onclick="setCategoryFilter('กล้อง', this)" class="cat-filter-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition">กล้อง</button>
-                    <button onclick="setCategoryFilter('อุปกรณ์เสริม', this)" class="cat-filter-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition">อุปกรณ์เสริม</button>
+                <div class="flex space-x-2 overflow-x-auto hide-scrollbar pb-1" id="categoryFilterButtons">
+                    <button onclick="setCategoryFilter('ทั้งหมด', this)" class="cat-btn px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition">ทั้งหมด</button>
+                    <button onclick="setCategoryFilter('แล็ปท็อป', this)" class="cat-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition">แล็ปท็อป</button>
+                    <button onclick="setCategoryFilter('กล้อง', this)" class="cat-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition">กล้อง</button>
+                    <button onclick="setCategoryFilter('อุปกรณ์เสริม', this)" class="cat-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition">อุปกรณ์เสริม</button>
                 </div>
             </div>
 
             <!-- Equipment Cards Grid -->
             <div id="equipmentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Dynamic Content Rendered by JS -->
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fas fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
+                    <p class="text-xs">กำลังโหลดข้อมูลอุปกรณ์จากฐานข้อมูลจริง...</p>
+                </div>
             </div>
         </section>
 
-        <!-- HOW IT WORKS & FEATURES SECTION (เพิ่มคอนเทนต์ให้ดูหลากหลายไม่จืดชืด) -->
+        <!-- HOW IT WORKS & FEATURES SECTION -->
         <section class="bg-white border-y border-slate-200 py-16 my-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12">
@@ -233,13 +240,13 @@
                     <div class="text-center">
                         <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-sm">3</div>
                         <h3 class="font-bold text-sm text-slate-800">สแกนรับของหน้าร้าน</h3>
-                        <p class="text-xs text-slate-500 mt-1">ยื่น QR Code ให้เจ้าหน้าที่ทะเบียนสแกนยิงเพื่อรับอุปกรณ์ไปใช้งาน</p>
+                        <p class="text-xs text-slate-500 mt-1">ยื่น QR Code ให้แอดมินสแกนยิงเพื่อรับอุปกรณ์ไปใช้งานจริง</p>
                     </div>
 
                     <div class="text-center">
                         <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-sm">4</div>
                         <h3 class="font-bold text-sm text-slate-800">ส่งคืนตามกำหนด</h3>
-                        <p class="text-xs text-slate-500 mt-1">นำอุปกรณ์มาคืน ณ จุดบริการ เจ้าหน้าที่สแกนรับคืนเพื่อเคลียร์สิทธิ์ยืม</p>
+                        <p class="text-xs text-slate-500 mt-1">นำอุปกรณ์มาคืน ณ จุดบริการ แอดมินสแกนรับคืนเพื่อเคลียร์สิทธิ์ยืม</p>
                     </div>
                 </div>
             </div>
@@ -247,7 +254,7 @@
 
     </main>
 
-    <!-- FOOTER & RULES SECTION (ย้ายกฎระเบียบมาไว้ด้านล่างอย่างเป็นระเบียบ) -->
+    <!-- FOOTER & RULES SECTION -->
     <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
@@ -264,8 +271,8 @@
                 <h4 class="font-bold text-white mb-3 text-sm"><i class="fas fa-shield-cat mr-2 text-amber-400"></i>ข้อกำหนดและเงื่อนไขสำคัญ</h4>
                 <ul class="space-y-2 text-slate-400">
                     <li>• จำกัดสิทธิ์การยืม <strong>1 ท่านต่อ 1 รายการอุปกรณ์</strong> เท่านั้น</li>
-                    <li>• ต้องนำส่งคืนภายในวันที่กำหนด หากเกินกำหนดจะถูกระงับสิทธิ์ยืม</li>
-                    <li>• การรับและคืนอุปกรณ์ต้องกระทำผ่านการสแกน QR Code ต่อหน้าเจ้าหน้าที่</li>
+                    <li>• ต้องนำส่งคืนภายในวันที่กำหนด หากเกินกำหนดจะมีค่าปรับ 50-100 บาท/วัน และถูกระงับสิทธิ์ยืม</li>
+                    <li>• การรับและคืนอุปกรณ์ต้องกระทำผ่านการสแกน QR Code ต่อหน้าเจ้าหน้าที่เท่านั้น</li>
                 </ul>
             </div>
 
@@ -280,7 +287,7 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800 pt-6 text-center text-slate-500">
-            © 2026 IT Borrow System. All rights reserved. ปรับปรุงระบบล่าสุด รหัสรุ่น v2.4 Standard Edition
+            © 2026 IT Borrow System. All rights reserved. ปรับปรุงระบบล่าสุด รหัสรุ่น v2.5 Production Real-Time Edition
         </div>
     </footer>
 
@@ -295,15 +302,15 @@
             </h3>
 
             <div class="flex items-center mb-5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-                <img id="bk_item_image" class="h-14 w-14 rounded-xl object-cover mr-3 border border-slate-200">
+                <img id="bk_item_image" class="h-14 w-14 rounded-xl object-cover mr-3 border border-slate-200" src="" alt="Equipment">
                 <div>
                     <p id="bk_item_name" class="font-bold text-sm text-slate-800 line-clamp-1"></p>
-                    <p id="bk_item_id" class="text-xs text-slate-400 mt-0.5"></p>
+                    <p id="bk_item_code" class="text-xs text-slate-400 mt-0.5"></p>
                 </div>
             </div>
 
-            <form id="bookingForm" class="space-y-4">
-                <input type="hidden" id="bk_item_real_id">
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                <input type="hidden" id="bk_item_id">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">วันที่เริ่มต้นยืม *</label>
                     <input type="date" id="bk_start_date" required class="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none">
@@ -315,26 +322,29 @@
 
                 <div class="p-3 bg-blue-50 rounded-xl text-xs text-blue-800 flex items-start space-x-2">
                     <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
-                    <span>ระบบจะส่งรายละเอียดการยืนยันไปที่อีเมล: <strong id="bk_user_email" class="underline"></strong></span>
+                    <span>ระบบจะส่งรายละเอียดการจองและ QR Code ไปที่อีเมล: <strong id="bk_user_email" class="underline"></strong></span>
                 </div>
 
                 <div class="flex space-x-3 pt-2">
                     <button type="button" onclick="closeModal('bookingModal')" class="flex-1 border border-slate-300 text-slate-700 py-3 rounded-xl text-xs font-bold hover:bg-slate-50">ยกเลิก</button>
-                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-blue-600/30">ยืนยันการจอง</button>
+                    <button type="submit" id="btnConfirmBooking" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-blue-600/30">ยืนยันการจอง</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL 2: QR CODE & SUCCESS MODAL -->
+    <!-- MODAL 2: QR CODE MODAL -->
     <div id="qrModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl relative">
+            <button onclick="closeModal('qrModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times text-lg"></i>
+            </button>
             <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <i class="fas fa-check text-emerald-600 text-xl"></i>
             </div>
             <h3 class="text-lg font-bold text-slate-800 mb-1">จองอุปกรณ์สำเร็จ!</h3>
-            <p class="text-xs text-slate-500 mb-4">แสดง QR Code นี้แก่เจ้าหน้าที่ทะเบียนเพื่อสแกนรับเครื่อง</p>
-            
+            <p class="text-xs text-slate-500 mb-4">แสดง QR Code นี้แก่เจ้าหน้าที่เพื่อสแกนรับเครื่อง</p>
+
             <div class="flex justify-center mb-4">
                 <div id="qrcode" class="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm"></div>
             </div>
@@ -343,7 +353,6 @@
                 <p><b>รหัสอ้างอิง:</b> <span id="qr_ref" class="text-blue-600 font-mono font-bold"></span></p>
                 <p><b>อุปกรณ์:</b> <span id="qr_item_title" class="font-semibold text-slate-700"></span></p>
                 <p><b>กำหนดวันคืน:</b> <span id="qr_return_date" class="text-red-600 font-bold"></span></p>
-                <p><b>อีเมลแจ้งเตือน:</b> <span id="qr_email_sent" class="text-slate-600"></span></p>
             </div>
 
             <button onclick="closeModal('qrModal')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl text-xs">เรียบร้อย</button>
@@ -356,451 +365,474 @@
             <button onclick="closeModal('profileModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
                 <i class="fas fa-times text-lg"></i>
             </button>
-            <h3 class="text-lg font-bold text-slate-800 mb-4">แก้ไขข้อมูลโปรไฟล์ผู้ใช้งาน</h3>
-            
+            <h3 class="text-lg font-bold text-slate-800 mb-4">ข้อมูลโปรไฟล์ผู้ใช้งาน</h3>
+
             <div class="flex flex-col items-center mb-6">
-                <div class="relative group cursor-pointer" onclick="document.getElementById('avatarInput').click()">
-                    <img id="profilePreview" src="https://ui-avatars.com/api/?name=User" class="h-24 w-24 rounded-full border-4 border-blue-50 object-cover shadow-md">
-                    <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                        <i class="fas fa-camera text-white"></i>
-                    </div>
-                </div>
-                <input type="file" id="avatarInput" class="hidden" accept="image/*" onchange="previewImage(this)">
-                <button onclick="document.getElementById('avatarInput').click()" class="text-xs text-blue-600 font-bold mt-2">เปลี่ยนรูปโปรไฟล์</button>
+                <img id="profilePreview" src="https://ui-avatars.com/api/?name=User" class="h-24 w-24 rounded-full border-4 border-blue-50 object-cover shadow-md">
+                <p class="text-xs text-slate-400 mt-2">บัญชีผู้ใช้งานระบบยืม-คืนไอที</p>
             </div>
 
-            <form id="profileForm" class="space-y-4">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อจริง</label>
-                    <input type="text" id="pf_firstname" class="w-full border rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">นามสกุล</label>
-                    <input type="text" id="pf_lastname" class="w-full border rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อผู้ใช้งาน (Username)</label>
+                    <input type="text" id="pf_username" readonly class="w-full border rounded-xl px-3.5 py-2 text-sm bg-slate-100 text-slate-600 font-semibold cursor-not-allowed">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">อีเมล (ใช้ส่งการแจ้งเตือน)</label>
-                    <input type="email" id="pf_email" readonly class="w-full border rounded-xl px-3.5 py-2 text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
+                    <input type="email" id="pf_email" readonly class="w-full border rounded-xl px-3.5 py-2 text-sm bg-slate-100 text-slate-600 cursor-not-allowed">
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition text-xs shadow-md">บันทึกการเปลี่ยนแปลง</button>
-            </form>
+                <button onclick="closeModal('profileModal')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl transition text-xs shadow-md">ปิดหน้าต่าง</button>
+            </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <!-- JAVASCRIPT LOGIC (DJANGO REST API INTEGRATION) -->
     <script>
-        // 1. ตรวจสอบผู้ใช้งานและสิทธิ์ Session (Session Guard)
-        let user = null;
-        const token = localStorage.getItem('token');
-        try {
-            const userStr = localStorage.getItem('user');
-            if (userStr) user = JSON.parse(userStr);
-        } catch(e) {
-            console.error("Session parse error", e);
-        }
-
-        if (!token || !user) {
-            window.location.href = 'login.html';
-        }
-
-        // 2. ข้อมูลจำลองอุปกรณ์ไอที (Mock Equipment Data)
-        let mockEquipments = [
-            { id: 1, name: "MacBook Pro M2 14-inch (2023)", code: "LAP-001", category: "แล็ปท็อป", status: "available", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
-            { id: 2, name: "Sony A7IV Mirrorless Camera", code: "CAM-042", category: "กล้อง", status: "available", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
-            { id: 3, name: "iPad Pro 11-inch M2 256GB", code: "TAB-015", category: "อุปกรณ์เสริม", status: "available", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
-            { id: 4, name: "Dell XPS 15 High Performance", code: "LAP-002", category: "แล็ปท็อป", status: "available", image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" }
-        ];
-
+        const API_BASE = 'http://127.0.0.1:8000';
+        let currentUser = null;
+        let authToken = null;
+        let allEquipments = [];
         let selectedCategory = 'ทั้งหมด';
-        let searchQuery = '';
-        let selectedImageBase64 = null;
+        let activeBookingRef = null;
+        let realTimePollInterval = null;
 
-        // 3. ฟังก์ชันดึง/บันทึกการยืมปัจจุบันของ User (Single Active Loan Management)
-        function getUserActiveLoan() {
-            const key = `active_loan_${user.username}`;
-            const data = localStorage.getItem(key);
-            return data ? JSON.parse(data) : null;
-        }
+        // 1. Session Guard Check
+        // ให้ตรงกับ key ที่ login.html เซฟจริง ('token' + 'user')
+        function checkAuthentication() {
+            authToken = localStorage.getItem('token') || localStorage.getItem('access_token');
+            const userStr = localStorage.getItem('user');
 
-        function setUserActiveLoan(loanData) {
-            const key = `active_loan_${user.username}`;
-            if (loanData) {
-                localStorage.setItem(key, JSON.stringify(loanData));
-            } else {
-                localStorage.removeItem(key);
-            }
-        }
-
-        // 4. แสดงข้อมูลผู้ใช้งานบน Navbar
-        function renderUserInfo() {
-            if (user) {
-                const displayName = `${user.first_name || user.username} ${user.last_name || ''}`.trim();
-                document.getElementById('navUsername').innerText = displayName;
-                const avatarUrl = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=2563eb&color=fff`;
-                document.getElementById('navAvatar').src = avatarUrl;
-                document.getElementById('profilePreview').src = avatarUrl;
-            }
-        }
-
-        // 5. Render Active Loan Tracker Widget (แสดงที่ส่วนบนเมื่อมียืมค้างอยู่)
-        function renderActiveLoanWidget() {
-            const activeLoan = getUserActiveLoan();
-            const container = document.getElementById('activeLoanSection');
-            const navStatusText = document.getElementById('navLoanStatusText');
-
-            if (!activeLoan || activeLoan.status === 'returned') {
-                container.classList.add('hidden');
-                container.innerHTML = '';
-                navStatusText.innerHTML = '<span class="text-emerald-600 font-bold">ไม่มีรายการค้าง (พร้อมยืม)</span>';
+            if (!authToken || !userStr) {
+                window.location.href = 'login.html';
                 return;
             }
 
-            container.classList.remove('hidden');
-            navStatusText.innerHTML = `<span class="text-amber-600 font-bold">ยืมค้างอยู่ 1 เครื่อง</span>`;
-
-            let statusBadge = '';
-            let step1Class = "bg-emerald-500 text-white";
-            let step2Class = "bg-slate-200 text-slate-500";
-            let step3Class = "bg-slate-200 text-slate-500";
-
-            if (activeLoan.status === 'pending_pickup') {
-                statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800"><i class="fas fa-clock mr-1"></i> รอยืนยันสแกนรับของ</span>';
-                step2Class = "bg-amber-500 text-white animate-pulse";
-            } else if (activeLoan.status === 'active') {
-                statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800"><i class="fas fa-sync fa-spin mr-1"></i> กำลังใช้งานอยู่</span>';
-                step2Class = "bg-emerald-500 text-white";
-                step3Class = "bg-blue-600 text-white";
+            try {
+                currentUser = JSON.parse(userStr);
+                document.getElementById('navUsername').innerText = currentUser.username || currentUser.email;
+                document.getElementById('navAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.username || 'User')}&background=0D8ABC&color=fff`;
+                renderSuspensionBanner();
+            } catch (e) {
+                console.error("User session parse error", e);
+                window.location.href = 'login.html';
             }
-
-            container.innerHTML = `
-                <div class="bg-white rounded-3xl p-6 shadow-xl border border-blue-100">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
-                        <div class="flex items-center space-x-3">
-                            <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
-                            <h3 class="font-extrabold text-slate-800 text-base">รายการยืมปัจจุบันของคุณ (จำกัด 1 รายการ)</h3>
-                        </div>
-                        <div>${statusBadge}</div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                        <div class="lg:col-span-5 flex items-center space-x-4">
-                            <img src="${activeLoan.itemImage}" class="h-20 w-20 rounded-2xl object-cover border border-slate-200">
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm sm:text-base">${activeLoan.itemName}</h4>
-                                <p class="text-xs text-slate-400 mt-0.5"><i class="fas fa-barcode"></i> รหัส: ${activeLoan.itemCode} | รหัสจอง: <strong class="text-blue-600 font-mono">${activeLoan.refCode}</strong></p>
-                                <p class="text-xs text-slate-600 mt-1">กำหนดคืน: <strong class="text-red-600">${activeLoan.endDate}</strong></p>
-                            </div>
-                        </div>
-
-                        <!-- Stepper Progress Tracker -->
-                        <div class="lg:col-span-4 bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                            <p class="text-[11px] font-bold text-slate-500 mb-2">ลำดับสถานะการติดตาม:</p>
-                            <div class="flex items-center justify-between text-xs font-semibold">
-                                <div class="flex items-center space-x-1">
-                                    <span class="w-5 h-5 rounded-full ${step1Class} flex items-center justify-center text-[10px]">1</span>
-                                    <span>จองแล้ว</span>
-                                </div>
-                                <i class="fas fa-chevron-right text-slate-300 text-[10px]"></i>
-                                <div class="flex items-center space-x-1">
-                                    <span class="w-5 h-5 rounded-full ${step2Class} flex items-center justify-center text-[10px]">2</span>
-                                    <span>รับของ</span>
-                                </div>
-                                <i class="fas fa-chevron-right text-slate-300 text-[10px]"></i>
-                                <div class="flex items-center space-x-1">
-                                    <span class="w-5 h-5 rounded-full ${step3Class} flex items-center justify-center text-[10px]">3</span>
-                                    <span>กำลังใช้งาน</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Actions & Testing Buttons -->
-                        <div class="lg:col-span-3 flex flex-col space-y-2">
-                            <button onclick="showActiveQRCode()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-2 shadow-md">
-                                <i class="fas fa-qrcode"></i>
-                                <span>แสดง QR Code ของฉัน</span>
-                            </button>
-                            
-                            <!-- ปุ่มจำลองการทำงานของแอดมิน เพื่อทดสอบระบบได้สมบูรณ์ -->
-                            <div class="flex space-x-1 pt-1">
-                                <button onclick="simAdminScanPickup()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] py-1.5 rounded-lg border font-medium">
-                                    [จำลอง: รับของ]
-                                </button>
-                                <button onclick="simAdminScanReturn()" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[10px] py-1.5 rounded-lg border border-emerald-200 font-medium">
-                                    [จำลอง: คืนของ]
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
         }
 
-        // 6. Render Equipment Catalog Grid
-        function renderEquipments() {
-            const grid = document.getElementById('equipmentGrid');
-            const activeLoan = getUserActiveLoan();
-            const hasActiveBorrow = activeLoan && activeLoan.status !== 'returned';
+        // 2. Fetch Equipments from Real Database API
+        async function fetchEquipments() {
+            try {
+                const res = await fetch(`${API_BASE}/api/equipments/`);
+                if (!res.ok) throw new Error("ไม่สามารถดึงข้อมูลอุปกรณ์ได้");
 
-            grid.innerHTML = '';
-
-            const filtered = mockEquipments.filter(item => {
-                const matchesCategory = (selectedCategory === 'ทั้งหมด') || (item.category === selectedCategory);
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.code.toLowerCase().includes(searchQuery);
-                return matchesCategory && matchesSearch;
-            });
-
-            document.getElementById('statTotalItems').innerText = mockEquipments.length.toString().padStart(2, '0');
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-white rounded-3xl border border-slate-200">
-                        <i class="fas fa-box-open text-4xl text-slate-300 mb-2"></i>
-                        <p class="text-slate-500 font-medium text-sm">ไม่พบอุปกรณ์ที่ตรงกับการค้นหา</p>
-                    </div>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                let actionBtnHTML = '';
-
-                if (hasActiveBorrow) {
-                    actionBtnHTML = `
-                        <button onclick="showLimitWarning()" class="w-full bg-slate-100 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-200 cursor-not-allowed flex items-center justify-center space-x-1">
-                            <i class="fas fa-lock text-xs"></i>
-                            <span>สิทธิ์เต็ม (มียืมค้างอยู่)</span>
-                        </button>`;
-                } else {
-                    actionBtnHTML = `
-                        <button onclick="openBookingModal(${item.id})" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition text-xs shadow-md shadow-blue-600/20 flex items-center justify-center space-x-1.5">
-                            <i class="far fa-calendar-plus"></i>
-                            <span>จองอุปกรณ์นี้</span>
-                        </button>`;
-                }
-
-                const card = `
-                    <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden hover:shadow-xl transition duration-300 flex flex-col justify-between group">
-                        <div>
-                            <div class="relative overflow-hidden">
-                                <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover group-hover:scale-105 transition duration-500">
-                                <span class="absolute top-3 right-3 text-[11px] font-extrabold px-3 py-1 bg-emerald-500 text-white rounded-full shadow-md">
-                                    <i class="fas fa-circle text-[8px] mr-1"></i> พร้อมยืม
-                                </span>
-                            </div>
-                            <div class="p-5">
-                                <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">${item.category}</span>
-                                <h3 class="font-bold text-slate-800 mt-2 text-base line-clamp-1 group-hover:text-blue-600 transition">${item.name}</h3>
-                                <p class="text-xs text-slate-400 mt-1"><i class="fas fa-barcode mr-1"></i> ${item.code}</p>
-                            </div>
-                        </div>
-                        <div class="p-5 pt-0">
-                            ${actionBtnHTML}
-                        </div>
+                allEquipments = await res.json();
+                document.getElementById('statTotalItems').innerText = String(allEquipments.length).padStart(2, '0');
+                renderEquipments();
+            } catch (err) {
+                document.getElementById('equipmentGrid').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-rose-500 bg-rose-50 rounded-2xl border border-rose-200">
+                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                        <p class="font-bold text-sm">เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</p>
+                        <p class="text-xs text-rose-400 mt-1">กรุณาตรวจสอบว่า Django Server กำลังรันอยู่ที่ http://127.0.0.1:8000</p>
                     </div>
                 `;
-                grid.innerHTML += card;
+            }
+        }
+
+        // 3. Render Equipment Cards
+        function renderEquipments() {
+            const container = document.getElementById('equipmentGrid');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            const filtered = allEquipments.filter(item => {
+                const matchCategory = selectedCategory === 'ทั้งหมด' || item.category === selectedCategory;
+                const matchSearch = item.name.toLowerCase().includes(searchQuery) ||
+                                    (item.serial_number && item.serial_number.toLowerCase().includes(searchQuery)) ||
+                                    (item.category && item.category.toLowerCase().includes(searchQuery));
+                return matchCategory && matchSearch;
             });
-        }
 
-        // 7. ระบบ Filter และค้นหา
-        function setCategoryFilter(cat, btn) {
-            selectedCategory = cat;
-            document.querySelectorAll('.cat-filter-btn').forEach(b => {
-                b.classList.remove('bg-blue-600', 'text-white');
-                b.classList.add('bg-white', 'text-slate-600', 'border');
-            });
-            btn.classList.remove('bg-white', 'text-slate-600', 'border');
-            btn.classList.add('bg-blue-600', 'text-white');
-            renderEquipments();
-        }
-
-        function filterCategory(cat) {
-            selectedCategory = cat;
-            renderEquipments();
-            scrollToCatalog();
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            searchQuery = e.target.value.toLowerCase().trim();
-            renderEquipments();
-        });
-
-        // 8. การเปิด Modal และตรวจสอบการยืม
-        const bkStart = document.getElementById('bk_start_date');
-        const bkEnd = document.getElementById('bk_end_date');
-
-        function openBookingModal(id) {
-            // ตรวจสอบสิทธิ์อีกครั้งเพื่อความปลอดภัย
-            const activeLoan = getUserActiveLoan();
-            if (activeLoan && activeLoan.status !== 'returned') {
-                showLimitWarning();
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <i class="fas fa-box-open text-4xl mb-3"></i>
+                        <p class="font-bold text-sm">ไม่พบอุปกรณ์ที่ตรงกับเงื่อนไข</p>
+                    </div>
+                `;
                 return;
             }
 
-            const item = mockEquipments.find(i => i.id === id);
+            const hasActiveBooking = activeBookingRef !== null;
+
+            container.innerHTML = filtered.map(item => {
+                const availableQty = item.available_quantity !== undefined ? item.available_quantity : (item.status === 'พร้อมใช้งาน' ? 1 : 0);
+                const totalQty = item.total_quantity || 1;
+                const isAvailable = availableQty > 0 && item.status !== 'ชำรุด/ส่งซ่อม';
+
+                    let buttonHtml = '';
+                if (currentUser && currentUser.is_suspended) {
+                    buttonHtml = `
+                        <button disabled class="w-full py-2.5 bg-rose-100 text-rose-500 rounded-xl text-xs font-bold cursor-not-allowed border border-rose-200">
+                            <i class="fas fa-ban mr-1"></i> บัญชีถูกระงับสิทธิ์การจอง
+                        </button>
+                    `;
+                } else if (hasActiveBooking) {
+                    buttonHtml = `
+                        <button onclick="openBookingModal(${item.id})" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-600/20 flex items-center justify-center space-x-1.5">
+                            <i class="fas fa-hand-pointer"></i>
+                            <span>เลือกจองอุปกรณ์นี้</span>
+                        </button>
+                    `;
+                } else {
+                    buttonHtml = `
+                        <button disabled class="w-full py-2.5 bg-rose-50 text-rose-400 rounded-xl text-xs font-bold cursor-not-allowed border border-rose-100">
+                            <i class="fas fa-ban mr-1"></i> ${item.status === 'ชำรุด/ส่งซ่อม' ? 'ชำรุด/ส่งซ่อม' : 'ของหมดในขณะนี้'}
+                        </button>
+                    `;
+                }
+
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200/80 p-4 hover:shadow-xl transition flex flex-col justify-between group">
+                        <div>
+                            <div class="relative overflow-hidden rounded-xl mb-3 bg-slate-100 h-44">
+                                <img src="${item.image || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=60'}"
+                                     alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                    isAvailable ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'
+                                } shadow-sm">
+                                    ${isAvailable ? `พร้อมยืม (${availableQty}/${totalQty})` : 'ไม่พร้อมยืม'}
+                                </span>
+                            </div>
+
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600">${item.category}</span>
+                            <h3 class="font-bold text-slate-800 text-sm mt-1.5 line-clamp-1">${item.name}</h3>
+                            <p class="text-xs text-slate-400 mt-0.5 mb-4">S/N: ${item.serial_number || 'IT-EQUIP-' + item.id}</p>
+                        </div>
+                        ${buttonHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 4. Category Filtering
+        function setCategoryFilter(category, btnElement) {
+            selectedCategory = category;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = 'cat-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition';
+            });
+            if (btnElement) {
+                btnElement.className = 'cat-btn px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm transition';
+            }
+            renderEquipments();
+        }
+
+        function quickFilterCategory(cat) {
+            scrollToCatalog();
+            selectedCategory = cat;
+            renderEquipments();
+        }
+
+        function handleSearch() {
+            renderEquipments();
+        }
+
+        // 5. Open Booking Modal
+        function openBookingModal(itemId) {
+            if (currentUser && currentUser.is_suspended) {
+                showToast("ไม่สามารถจองได้", "บัญชีของคุณถูกระงับสิทธิ์การจองอยู่ในขณะนี้", "fa-ban", "text-rose-600");
+                return;
+            }
+            if (activeBookingRef) {
+                showToast("คำเตือน", "คุณมียอดการยืมที่ค้างอยู่ ไม่สามารถยืมอุปกรณ์เพิ่มได้ตามเงื่อนไข 1 บัญชีต่อ 1 เครื่อง", "fa-exclamation-circle", "text-amber-600");
+                return;
+            }
+
+            const item = allEquipments.find(e => e.id === itemId);
             if (!item) return;
 
-            document.getElementById('bk_item_real_id').value = item.id;
+            document.getElementById('bk_item_id').value = item.id;
             document.getElementById('bk_item_name').innerText = item.name;
-            document.getElementById('bk_item_id').innerText = `รหัสคุรุภัณฑ์: ${item.code}`;
-            document.getElementById('bk_item_image').src = item.image;
-            document.getElementById('bk_user_email').innerText = user.email || 'user@example.com';
-            
+            document.getElementById('bk_item_code').innerText = `S/N: ${item.serial_number || 'IT-EQUIP-' + item.id}`;
+            document.getElementById('bk_item_image').src = item.image || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=60';
+            document.getElementById('bk_user_email').innerText = currentUser.email || currentUser.username;
+
+            // Set Default Dates (Today & Next 3 Days)
             const today = new Date().toISOString().split('T')[0];
-            bkStart.min = today;
-            bkEnd.min = today;
-            bkStart.value = today;
-            bkEnd.value = today;
+            const next3Days = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+            document.getElementById('bk_start_date').value = today;
+            document.getElementById('bk_start_date').min = today;
+            document.getElementById('bk_end_date').value = next3Days;
+            document.getElementById('bk_end_date').min = today;
 
             document.getElementById('bookingModal').classList.remove('hidden');
         }
 
-        bkStart.addEventListener('change', function() {
-            bkEnd.min = this.value;
-            if (bkEnd.value < this.value) {
-                bkEnd.value = this.value;
-            }
-        });
-
-        // 9. ยืนยันการจอง และสร้าง QR Code
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        // 6. Submit Booking Form to Django API
+        async function handleBookingSubmit(e) {
             e.preventDefault();
+            const submitBtn = document.getElementById('btnConfirmBooking');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> กำลังบันทึกการจอง...';
 
-            const itemId = parseInt(document.getElementById('bk_item_real_id').value);
-            const startDate = bkStart.value;
-            const endDate = bkEnd.value;
+            const equipmentId = document.getElementById('bk_item_id').value;
+            const startDate = document.getElementById('bk_start_date').value;
+            const endDate = document.getElementById('bk_end_date').value;
 
-            if (endDate < startDate) {
-                alert('วันกำหนดคืนต้องไม่น้อยกว่าวันที่เริ่มยืม');
-                return;
+            try {
+                const res = await fetch(`${API_BASE}/bookings/api/create/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // FIX: เดิมใช้ 'Bearer ${authToken}' ซึ่งไม่ตรงกับ scheme ที่
+                        // admin_dashboard.html ใช้ ('Token ${token}') ทั้งที่เป็น token
+                        // เดียวกันจาก /api/login/ ตัวเดียวกัน ถ้า backend ตั้งเป็น
+                        // DRF TokenAuthentication คำขอนี้จะถูกปฏิเสธ (401) แบบเงียบๆ
+                        // แก้ให้ใช้ scheme เดียวกันทั้งระบบ
+                        'Authorization': `Token ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        equipment_id: equipmentId,
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    closeModal('bookingModal');
+                    showToast("การจองสำเร็จ!", "ระบบได้ส่งอีเมลยืนยันการจองและ QR Code ไปที่อีเมลของคุณเรียบร้อยแล้ว", "fa-envelope-circle-check", "text-emerald-600");
+
+                    // Refresh Data & Start Real-time Tracking
+                    fetchEquipments();
+                    startRealTimeTracking(data.booking_ref);
+
+                    // Show QR Modal
+                    showQRModal(data.booking_ref, document.getElementById('bk_item_name').innerText, endDate);
+                                } else {
+                    showToast("ไม่สามารถจองได้", data.message || "เกิดข้อผิดพลาดในการบันทึกการจอง", "fa-triangle-exclamation", "text-rose-600");
+                    if (res.status === 403) {
+                        setTimeout(() => location.reload(), 2000); // โหลดข้อมูลผู้ใช้ใหม่เพื่อแสดงแบนเนอร์
+                    }
+                }
+            } catch (err) {
+                alert("ไม่สามารถติดต่อเซิร์ฟเวอร์เพื่อจองอุปกรณ์ได้");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'ยืนยันการจอง';
             }
+        }
 
-            const item = mockEquipments.find(i => i.id === itemId);
-            const refCode = "ITB-" + Math.floor(100000 + Math.random() * 900000);
+        // 7. Render QR Code
+        function showQRModal(bookingRef, itemName, returnDate) {
+            document.getElementById('qr_ref').innerText = bookingRef;
+            document.getElementById('qr_item_title').innerText = itemName;
+            document.getElementById('qr_return_date').innerText = returnDate;
 
-            // บันทึกรายการยืมใหม่
-            const loanData = {
-                refCode: refCode,
-                itemId: item.id,
-                itemName: item.name,
-                itemCode: item.code,
-                itemImage: item.image,
-                startDate: startDate,
-                endDate: endDate,
-                status: 'pending_pickup', // pending_pickup -> active -> returned
-                userEmail: user.email || `${user.username}@itborrow.ac.th`,
-                username: user.username,
-                createdAt: new Date().toISOString()
-            };
-
-            setUserActiveLoan(loanData);
-            closeModal('bookingModal');
-            
-            // อัปเดต UI ทันที
-            renderActiveLoanWidget();
-            renderEquipments();
-
-            // แสดง Toast แจ้งเตือนส่งอีเมลจริง
-            showToast("ส่งอีเมลแจ้งเตือนการจองสำเร็จ", `ระบบได้ส่ง QR Code และกำหนดคืนไปยัง ${loanData.userEmail} เรียบร้อยแล้ว`);
-
-            // แสดง Modal QR Code
-            renderQRCodeModal(loanData);
-        });
-
-        function renderQRCodeModal(loanData) {
-            document.getElementById('qr_ref').innerText = loanData.refCode;
-            document.getElementById('qr_item_title').innerText = loanData.itemName;
-            document.getElementById('qr_return_date').innerText = loanData.endDate;
-            document.getElementById('qr_email_sent').innerText = loanData.userEmail;
-
-            document.getElementById('qrcode').innerHTML = ""; 
-            new QRCode(document.getElementById("qrcode"), {
-                text: JSON.stringify({ ref: loanData.refCode, item: loanData.itemName, user: loanData.username, end: loanData.endDate }),
-                width: 150,
-                height: 150,
-                colorDark : "#0f172a",
-                colorLight : "#ffffff"
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: bookingRef,
+                width: 180,
+                height: 180,
+                colorDark: "#0f172a",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
 
             document.getElementById('qrModal').classList.remove('hidden');
         }
 
-        function showActiveQRCode() {
-            const activeLoan = getUserActiveLoan();
-            if (activeLoan) {
-                renderQRCodeModal(activeLoan);
+        // 8. Real-time Status Tracking & Polling
+        function startRealTimeTracking(bookingRef) {
+            activeBookingRef = bookingRef;
+            if (realTimePollInterval) clearInterval(realTimePollInterval);
+
+            // Poll Every 3 Seconds
+            checkActiveBookingStatus();
+            realTimePollInterval = setInterval(checkActiveBookingStatus, 3000);
+        }
+
+                // แสดงแบนเนอร์แจ้งพักสิทธิ์ ถ้า currentUser.is_suspended === true
+        // (ค่านี้มาจาก login response ที่แก้ users/views.py ให้ส่งมาด้วยแล้ว)
+        function renderSuspensionBanner() {
+            const existing = document.getElementById('suspensionBanner');
+            if (existing) existing.remove();
+
+            if (!currentUser || !currentUser.is_suspended) return;
+
+            const untilText = currentUser.suspended_until
+                ? new Date(currentUser.suspended_until).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })
+                : 'จนกว่าเจ้าหน้าที่จะปลดล็อก';
+
+            const banner = document.createElement('div');
+            banner.id = 'suspensionBanner';
+            banner.className = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-[-1rem]';
+            banner.innerHTML = `
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl p-4 flex items-center space-x-3">
+                    <i class="fas fa-ban text-xl"></i>
+                    <div class="text-xs">
+                        <p class="font-bold">บัญชีของคุณถูกระงับสิทธิ์การจองอุปกรณ์</p>
+                        <p class="mt-0.5">ปลดล็อกอัตโนมัติวันที่ ${untilText}${currentUser.total_fine && Number(currentUser.total_fine) > 0 ? ` • มีค่าปรับค้างชำระ ${currentUser.total_fine} บาท` : ''}</p>
+                    </div>
+                </div>
+            `;
+            document.body.insertBefore(banner, document.querySelector('main'));
+        }
+
+        async function checkActiveBookingStatus() {
+            if (!activeBookingRef) {
+                renderActiveLoanWidget(null);
+                return;
             }
-        }
 
-        // 10. ระบบแก้ไข Profile
-        function openProfileModal() {
-            document.getElementById('pf_firstname').value = user.first_name || '';
-            document.getElementById('pf_lastname').value = user.last_name || '';
-            document.getElementById('pf_email').value = user.email || `${user.username}@itborrow.ac.th`;
-            document.getElementById('profileModal').classList.remove('hidden');
-        }
-
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    selectedImageBase64 = e.target.result;
-                    document.getElementById('profilePreview').src = selectedImageBase64;
+            try {
+                const res = await fetch(`${API_BASE}/bookings/api/status/${activeBookingRef}/`);
+                if (!res.ok) {
+                    activeBookingRef = null;
+                    renderActiveLoanWidget(null);
+                    return;
                 }
-                reader.readAsDataURL(input.files[0]);
+
+                const data = await res.json();
+                renderActiveLoanWidget(data);
+
+                // If returned -> Clear active loan and allow re-booking
+                if (data.status === 'returned') {
+                    if (realTimePollInterval) clearInterval(realTimePollInterval);
+                    showToast("คืนอุปกรณ์เรียบร้อยแล้ว", "ขอบคุณที่ส่งคืนอุปกรณ์ตรงเวลา คุณสามารถยืมอุปกรณ์อื่นเพิ่มได้ทันที", "fa-circle-check", "text-emerald-600");
+                    activeBookingRef = null;
+                    fetchEquipments(); // Refresh inventory stock
+                }
+            } catch (err) {
+                console.error("Polling status error", err);
             }
         }
 
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            user.first_name = document.getElementById('pf_firstname').value.trim();
-            user.last_name = document.getElementById('pf_lastname').value.trim();
-            if (selectedImageBase64) {
-                user.avatar = selectedImageBase64;
+        // -----------------------------------------------------------------
+        // FIX (real-time hang): เดิม activeBookingRef เป็นแค่ตัวแปรในหน่วยความจำ
+        // (JS variable) ของหน้าเว็บ ไม่ได้ผูกกับฐานข้อมูลถาวร ทำให้ถ้าผู้ใช้
+        // รีเฟรชหน้า / ปิดแล้วเปิดเบราว์เซอร์ใหม่ ระบบจะ "จำไม่ได้" ว่ามีของ
+        // ค้างยืมอยู่ -> ปุ่มจองกลับมากดได้ทันที ขัดกับกฎ 1 บัญชี 1 รายการ
+        //
+        // แก้ไข: ตอนโหลดหน้าเว็บ ให้ถามฝั่ง server ก่อนว่าผู้ใช้คนนี้มีรายการ
+        // ที่ยังไม่ returned อยู่หรือไม่ แล้ว resume การติดตามสถานะ
+        //
+        // ** ต้องมี backend endpoint นี้รองรับ: GET /bookings/api/my-active/ **
+        // (คืนค่า JSON เช่น {"booking_ref": "BK-XXXXXX", ...} หรือ 404/ว่าง
+        // ถ้าไม่มีรายการค้างยืม) ถ้ายังไม่มี endpoint นี้ในฝั่ง Django ให้ส่ง
+        // ไฟล์ views.py ของแอป bookings มาให้ตรวจ จะช่วยสร้าง endpoint นี้ให้
+        // -----------------------------------------------------------------
+        async function restoreActiveBooking() {
+            try {
+                const res = await fetch(`${API_BASE}/bookings/api/my-active/`, {
+                    headers: { 'Authorization': `Token ${authToken}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.booking_ref) {
+                        startRealTimeTracking(data.booking_ref);
+                        return;
+                    }
+                }
+                renderActiveLoanWidget(null);
+            } catch (err) {
+                console.error("Restore active booking error", err);
+                renderActiveLoanWidget(null);
             }
-
-            localStorage.setItem('user', JSON.stringify(user));
-            renderUserInfo();
-            closeModal('profileModal');
-            showToast("อัปเดตข้อมูลสำเร็จ", "ข้อมูลส่วนตัวของคุณถูกบันทึกเรียบร้อยแล้ว");
-        });
-
-        // 11. Helper Functions & Simulations
-        function showLimitWarning() {
-            const activeLoan = getUserActiveLoan();
-            alert(`⚠️ ข้อจำกัดการใช้งาน:\nคุณมีรายการยืมอุปกรณ์ "${activeLoan ? activeLoan.itemName : 'อุปกรณ์เดิม'}" ค้างอยู่ 1 รายการ\n\nตามระเบียบระบบ ท่านต้องส่งคืนอุปกรณ์เดิมแก่เจ้าหน้าที่ก่อน จึงจะสามารถเปิดการจองอุปกรณ์ใหม่ได้ครับ`);
         }
 
-        function simAdminScanPickup() {
-            const activeLoan = getUserActiveLoan();
-            if (activeLoan) {
-                activeLoan.status = 'active';
-                setUserActiveLoan(activeLoan);
-                renderActiveLoanWidget();
-                showToast("สแกนรับของสำเร็จ (จำลอง)", "เจ้าหน้าที่ได้สแกนรับรองการยืมอุปกรณ์ของคุณเรียบร้อยแล้ว");
-            }
-        }
+        // 9. Render Active Loan Widget
+        function renderActiveLoanWidget(loanData) {
+            const container = document.getElementById('activeLoanContainer');
+            const navText = document.getElementById('navLoanStatusText');
+            const navIcon = document.getElementById('navLoanIcon');
 
-        function simAdminScanReturn() {
-            const activeLoan = getUserActiveLoan();
-            if (activeLoan) {
-                activeLoan.status = 'returned';
-                setUserActiveLoan(null); // เคลียร์สิทธิ์ ให้จองใหม่ได้
-                renderActiveLoanWidget();
+            if (!loanData || loanData.status === 'returned') {
+                container.innerHTML = `
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 text-xl font-bold">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">พร้อมสำหรับการยืมอุปกรณ์</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">คุณไม่มีรายการค้างส่งคืน สามารถเลือกอุปกรณ์ที่ต้องการจองได้ทันที</p>
+                            </div>
+                        </div>
+                        <button onclick="scrollToCatalog()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-md">
+                            เลือกอุปกรณ์ยืม
+                        </button>
+                    </div>
+                `;
+                navText.innerText = "ไม่มีรายการค้าง";
+                navText.className = "text-slate-800";
+                navIcon.className = "fas fa-box text-blue-600";
                 renderEquipments();
-                showToast("ส่งคืนสำเร็จ (จำลอง)", "การคืนอุปกรณ์เรียบร้อยแล้ว สิทธิ์ของคุณได้รับการปลดล็อกให้ยืมเครื่องใหม่ได้ทันที");
+                return;
             }
+
+            // Real-time Status Card Rendering
+            const statusMap = {
+                'pending': { title: 'รอรับของ (ยื่น QR Code หน้าร้าน)', color: 'bg-amber-100 text-amber-800 border-amber-300', icon: 'fa-qrcode', desc: 'ระบบส่งอีเมลแล้ว กรุณาเปิด QR Code นี้ให้เจ้าหน้าที่สแกนปล่อยของ' },
+                'active': { title: 'กำลังยืมใช้งานอยู่', color: 'bg-blue-100 text-blue-800 border-blue-300', icon: 'fa-laptop-code', desc: 'เจ้าหน้าที่สแกนยืนยันรับของเรียบร้อยแล้ว กรุณานำมาคืนภายในวันที่กำหนด' },
+                'overdue': { title: 'เกินกำหนดส่งคืน (ถูกระงับสิทธิ์ยืม)', color: 'bg-rose-100 text-rose-800 border-rose-300', icon: 'fa-triangle-exclamation', desc: 'เกินกำหนดส่งคืน มีค่าปรับตามเงื่อนไข กรุณานำอุปกรณ์มาคืนทันทีเพื่อปลดล็อกสิทธิ์' }
+            };
+
+            const st = statusMap[loanData.status] || statusMap['pending'];
+
+            navText.innerText = st.title;
+            navText.className = "text-blue-600 font-bold";
+            navIcon.className = "fas fa-clock text-amber-500 animate-spin";
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-8 space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-extrabold border ${st.color} flex items-center space-x-1.5">
+                                <i class="fas ${st.icon}"></i>
+                                <span>${st.title}</span>
+                            </span>
+                            <span class="text-xs font-mono font-bold text-slate-400">REF: ${loanData.booking_ref}</span>
+                        </div>
+
+                        <h3 class="text-lg font-extrabold text-slate-800">${loanData.equipment_name || 'อุปกรณ์ไอที'}</h3>
+                        <p class="text-xs text-slate-600">${st.desc}</p>
+
+                        <div class="flex flex-wrap gap-4 text-xs pt-1 border-t border-slate-100">
+                            <div><span class="text-slate-400">วันที่เริ่มยืม:</span> <strong class="text-slate-700">${loanData.start_date}</strong></div>
+                            <div><span class="text-slate-400">กำหนดวันคืน:</span> <strong class="text-rose-600">${loanData.end_date}</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                        <div id="widget_qrcode" class="p-2 bg-white border rounded-xl shadow-sm"></div>
+                        <p class="text-[11px] font-mono font-bold text-slate-600 mt-2">${loanData.booking_ref}</p>
+                        <button onclick="showQRModal('${loanData.booking_ref}', '${loanData.equipment_name || 'อุปกรณ์ไอที'}', '${loanData.end_date}')" class="mt-2 text-xs text-blue-600 font-bold hover:underline">
+                            <i class="fas fa-expand mr-1"></i> ขยาย QR Code
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Gen QR Code in Widget
+            setTimeout(() => {
+                const qrDiv = document.getElementById('widget_qrcode');
+                if (qrDiv) {
+                    qrDiv.innerHTML = '';
+                    new QRCode(qrDiv, {
+                        text: loanData.booking_ref,
+                        width: 100,
+                        height: 100
+                    });
+                }
+            }, 100);
+
+            renderEquipments();
         }
 
-        function showToast(title, message) {
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
-            const toast = document.getElementById('toastNotification');
-            toast.classList.remove('translate-x-full');
-            setTimeout(() => { hideToast(); }, 5000);
-        }
-
-        function hideToast() {
-            document.getElementById('toastNotification').classList.add('translate-x-full');
+        // 10. UI Helper Functions
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
         }
 
         function scrollToCatalog() {
@@ -808,25 +840,46 @@
         }
 
         function scrollToActiveLoan() {
-            const activeLoan = getUserActiveLoan();
-            if (activeLoan) {
-                document.getElementById('activeLoanSection').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                showToast("ไม่มีรายการค้าง", "ขณะนี้คุณไม่มีรายการอุปกรณ์ที่อยู่ระหว่างการยืม");
+            document.getElementById('activeLoanSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showToast(title, message, iconClass = "fa-info-circle", iconColor = "text-blue-600") {
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            document.getElementById('toastIcon').className = `${iconColor} text-xl mt-0.5`;
+            document.getElementById('toastIcon').innerHTML = `<i class="fas ${iconClass}"></i>`;
+
+            const toast = document.getElementById('toastNotification');
+            toast.classList.remove('translate-x-full');
+            setTimeout(hideToast, 5000);
+        }
+
+        function hideToast() {
+            document.getElementById('toastNotification').classList.add('translate-x-full');
+        }
+
+        function openProfileModal() {
+            document.getElementById('pf_username').value = currentUser.username || 'User';
+            document.getElementById('pf_email').value = currentUser.email || 'user@example.com';
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function logout() {
+            if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user');
+                if (realTimePollInterval) clearInterval(realTimePollInterval);
+                window.location.href = 'login.html';
             }
         }
 
-        function closeModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-        }
-
-        // เริ่มการทำงานระบบเมื่อเปิดหน้าเว็บ
-        renderUserInfo();
-        renderActiveLoanWidget();
-        renderEquipments();
+        // Initial Load Event
+        window.onload = () => {
+            checkAuthentication();
+            fetchEquipments();
+            restoreActiveBooking(); // กู้สถานะการยืมที่ค้างอยู่จาก server (แก้ปัญหา real-time หายตอนรีเฟรช)
+        };
     </script>
 </body>
 </html>
